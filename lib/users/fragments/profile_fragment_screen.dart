@@ -1,10 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skincare_app/users/authentication/login_screen.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
+import 'package:skincare_app/users/userPreferences/user_preferences.dart';
 
 class ProfileFragmentScreen extends StatelessWidget {
   //------- FUNGSI UNTUK MEMANGGIL EMAIL USER YANG SUDAH LOGIN UNTUK TAMPIL KE PROFILE----------------//
   final CurrentUser _currentUser = Get.put(CurrentUser());
+
+  //------- FUNGSI UNTUK SIGN OUT USER --------------------------------------//
+  signOutUser() async{
+    var resultResponse = await Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.white,
+        title: const Text(
+          "Logout",
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        content: const Text(
+          "Are You Sure To Logout?",
+        ),
+        actions: [
+          //---------BUTTON LOGOUT--------------------------------------------//
+          TextButton(
+              onPressed: () {
+                Get.back();
+              },
+              child: const Text(
+                "No",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              )
+          ),
+          TextButton(
+              onPressed: () {
+                Get.back(result: "LoggedOut");
+              },
+              child: const Text(
+                "Yes",
+                style: TextStyle(
+                  color: Colors.black,
+                ),
+              )
+          ),
+        ],
+      ),
+    );
+
+    if(resultResponse == "LoggedOut"){
+      //----------------- DELETE USER DATA FROM LOCAL STORAGE TO LOGOUT-------//
+      RememberUserPrefs.removeUserInfo().then((value) {
+        Get.off(LoginScreen());
+      });
+    }
+  }
 
   //--------------------- FUNGSI MENAMPILKAN USERNAME & ICON DI PROFILE--------------//
   Widget userInfoItemProfile(IconData iconData, String userData){
@@ -64,6 +117,7 @@ class ProfileFragmentScreen extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               onTap: (){
+                signOutUser();
 
               },
               borderRadius: BorderRadius.circular(30),

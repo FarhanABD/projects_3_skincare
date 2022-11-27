@@ -2,36 +2,37 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:skincare_app/admin/admin_login.dart';
+import 'package:skincare_app/admin/admin_upload_items.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/authentication/login_screen.dart';
 import 'package:skincare_app/users/authentication/signup_screen.dart';
 import 'package:http/http.dart' as http;
 import 'package:skincare_app/users/fragments/dashboard_fragments.dart';
 import 'package:skincare_app/users/model/user.dart';
 import 'package:skincare_app/users/userPreferences/user_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class AdminLoginScreen extends StatefulWidget {
+  const AdminLoginScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<AdminLoginScreen> createState() => _AdminLoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _AdminLoginScreenState extends State<AdminLoginScreen> {
 
   var formKey = GlobalKey<FormState>();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var isObsecure = true.obs;
 
-  loginusernow() async{
+  loginAdminNow() async{
     try {
       var res = await http.post
         (
-        Uri.parse(Api.login),
+        Uri.parse(Api.adminlogin),
         body: {
-          'user_email': emailController.text.trim(),
-          'user_password':passwordController.text.trim(),
+          'admin_email': emailController.text.trim(),
+          'admin_password':passwordController.text.trim(),
         },
       );
 
@@ -42,14 +43,9 @@ class _LoginScreenState extends State<LoginScreen> {
         {
           Fluttertoast.showToast(msg: "Login Succesfully :)");
 
-          User userinfo = User.fromJson( resbodyoflogin[ "userData"]);
-
-          //save userInfo to local storage pake Shared Preferences
-          await RememberUserPrefs.storeUserInfo(userinfo);
-
           // Fungsi pindah Activity dari Login ke Dashboard
-          Future.delayed(Duration(milliseconds: 2000),(){
-            Get.to(DashboardOfFragments());
+          Future.delayed(const Duration(milliseconds: 2000),(){
+            Get.to(AdminUploadItemsScreen());
           });
         }
         else {
@@ -69,9 +65,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: LayoutBuilder(
         builder: (context, cons){
           return ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: cons.maxHeight,
-              ),
+            constraints: BoxConstraints(
+              minHeight: cons.maxHeight,
+            ),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -162,64 +158,64 @@ class _LoginScreenState extends State<LoginScreen> {
                                   const SizedBox(height: 18,),
 
                                   //Password Textfield
-                                 Obx(
-                                     ()=>  TextFormField(
-                                       controller: passwordController,
-                                       obscureText: isObsecure.value,
-                                       validator: (val) => val == "" ? "Please Insert The password" : null,
-                                       decoration: InputDecoration(
-                                         prefixIcon: const Icon(
-                                           Icons.vpn_key_sharp,
-                                           color: Colors.black26,
-                                         ),
+                                  Obx(
+                                        ()=>  TextFormField(
+                                      controller: passwordController,
+                                      obscureText: isObsecure.value,
+                                      validator: (val) => val == "" ? "Please Insert The password" : null,
+                                      decoration: InputDecoration(
+                                        prefixIcon: const Icon(
+                                          Icons.vpn_key_sharp,
+                                          color: Colors.black26,
+                                        ),
 
-                                         //Untuk Melihat Password
-                                         suffixIcon: Obx(
-                                               ()=> GestureDetector(
-                                             onTap: (){
-                                               isObsecure.value = !isObsecure.value;
+                                        //Untuk Melihat Password
+                                        suffixIcon: Obx(
+                                              ()=> GestureDetector(
+                                            onTap: (){
+                                              isObsecure.value = !isObsecure.value;
 
-                                             },
-                                             child: Icon(
-                                               isObsecure.value ? Icons.visibility_off : Icons.visibility,
-                                               color: Colors.pinkAccent,
-                                             ),
-                                           ),
-                                         ),
-                                         hintText: "password...",
-                                         border: OutlineInputBorder(
-                                           borderRadius: BorderRadius.circular(30),
-                                           borderSide: const BorderSide(
-                                             color: Colors.white60,
-                                           ),
-                                         ),
-                                         enabledBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.circular(30),
-                                           borderSide: const BorderSide(
-                                             color: Colors.white60,
-                                           ),
-                                         ),
-                                         focusedBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.circular(30),
-                                           borderSide: const BorderSide(
-                                             color: Colors.white60,
-                                           ),
-                                         ),
-                                         disabledBorder: OutlineInputBorder(
-                                           borderRadius: BorderRadius.circular(30),
-                                           borderSide: const BorderSide(
-                                             color: Colors.white60,
-                                           ),
-                                         ),
-                                         contentPadding: const EdgeInsets.symmetric(
-                                           horizontal: 14,
-                                           vertical: 6,
-                                         ),
-                                         fillColor: Colors.white,
-                                         filled: true,
-                                       ),
-                                     ),
-                                 ),
+                                            },
+                                            child: Icon(
+                                              isObsecure.value ? Icons.visibility_off : Icons.visibility,
+                                              color: Colors.pinkAccent,
+                                            ),
+                                          ),
+                                        ),
+                                        hintText: "password...",
+                                        border: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                          borderSide: const BorderSide(
+                                            color: Colors.white60,
+                                          ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                          borderSide: const BorderSide(
+                                            color: Colors.white60,
+                                          ),
+                                        ),
+                                        focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                          borderSide: const BorderSide(
+                                            color: Colors.white60,
+                                          ),
+                                        ),
+                                        disabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(30),
+                                          borderSide: const BorderSide(
+                                            color: Colors.white60,
+                                          ),
+                                        ),
+                                        contentPadding: const EdgeInsets.symmetric(
+                                          horizontal: 14,
+                                          vertical: 6,
+                                        ),
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                      ),
+                                    ),
+                                  ),
 
                                   const SizedBox(height: 18,),
 
@@ -232,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       onTap: (){
                                         if (formKey.currentState!.validate())
                                         {
-                                          loginusernow();
+                                          loginAdminNow();
                                         }
 
                                       },
@@ -257,46 +253,18 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
 
-                            //dont have an account btn - register
+                            const SizedBox(height: 16,),
+
+                            //Iam Not an Admin btn -
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 const Text(
-                                    "Dont have an Account ?"
+                                    "I am Not an Admin?"
                                 ),
                                 TextButton(
                                   onPressed: (){
-                                    Get.to(SignUpScreen());
-                                  },
-                                  child: const Text(
-                                    "Register Here",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-
-                            const Text(
-                              "Or",
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16,
-                              ),
-                            ),
-
-                            // Admin Login Btn
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Text(
-                                    "Are You an Admin ?"
-                                ),
-                                TextButton(
-                                  onPressed: (){
-                                    Get.to(AdminLoginScreen());
+                                    Get.to(LoginScreen());
 
                                   },
                                   child: const Text(
@@ -309,6 +277,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ],
                             ),
+
+
+
+                            // Admin Login Btn
+
                           ],
                         ),
                       ),

@@ -10,5 +10,4 @@ class CurrentUser extends GetxController{
     User? getUserInfoFromLocalStorage = await RememberUserPrefs.readUserInfo();
     _currentUser.value = getUserInfoFromLocalStorage!;
   }
-
 }

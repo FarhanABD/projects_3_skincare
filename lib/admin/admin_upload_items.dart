@@ -51,8 +51,9 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             title: const Text(
               "Item Image",
               style: TextStyle(
-                color: Colors.pinkAccent,
                 fontWeight: FontWeight.bold,
+                color: Colors.pinkAccent,
+
               ),
             ),
             children: [

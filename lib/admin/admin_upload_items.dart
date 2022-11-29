@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,6 +6,7 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:skincare_app/admin/admin_login.dart';
+import 'package:http/http.dart' as http;
 
 class AdminUploadItemsScreen extends StatefulWidget {
 
@@ -135,7 +137,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             children: [
               const Icon(
                 Icons.add_photo_alternate,
-                color: Colors.white54,
+                color: Colors.pink,
                 size: 200,
               ),
 
@@ -171,6 +173,48 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
     );
   }
 
+  //-------- Upload ItemForm Screen methods ----------------------------------//
+  uploadItemImage() async
+  {
+    var requestImgurApi = http.MultipartRequest(
+      "POST",
+      Uri.parse("https://api.imgur.com/3/image")
+    );
+    String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+    requestImgurApi.fields['title'] = imageName;
+    requestImgurApi.headers['Authorization'] = "Client-ID " + "97f174c40b9a6e4";
+
+    var imageFile = await http.MultipartFile.fromPath(
+      'image',
+      pickedImageXFile!.path,
+      filename: imageName,
+    );
+    requestImgurApi.files.add(imageFile);
+    var responseFromImgurApi = await requestImgurApi.send();
+
+    var responseDataFromImgurApi = await responseFromImgurApi.stream.toBytes();
+    //-------- Hasil Request Image Dari Imgur API----------------------------//
+    var resultFromImgurApi = String.fromCharCodes(responseDataFromImgurApi);
+
+    //-------- UNTUK MEMUNCULKAN LINK DARI FOTO PRODUK -----------------------//
+    print("Result :: ");
+    print(resultFromImgurApi);
+
+    Map<String, dynamic> jsonRes = json.decode(resultFromImgurApi);
+    imageLink = ( jsonRes["data"]["Link"]).toString();
+    String deleteHash = ( jsonRes["data"]["deletehash"]).toString();
+
+    //-------- UNTUK NGETEST API DARI FUNGSI IMAGELINK------------------------//
+    print("imageLink :: ");
+    print(imageLink);
+
+    //-------- UNTUK NGETEST API DARI FUNSGI DELETEHASH-----------------------//
+    print("deleteHash :: ");
+    print(deleteHash);
+
+  }
+  
+
   Widget uploadItemsFormScreen(){
     return Scaffold(
       backgroundColor: Colors.white,
@@ -179,7 +223,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.pinkAccent,
+
                 Colors.white,
               ],
             ),
@@ -187,7 +231,11 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         ),
         automaticallyImplyLeading: false,
         title: const Text(
-          "Upload Form"
+          "Upload Form",
+          style: TextStyle(
+            color: Colors.black
+          ),
+
         ),
         centerTitle: true,
         leading: IconButton(
@@ -573,6 +621,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                               onTap: (){
                                 if (formKey.currentState!.validate())
                                 {
+                                  uploadItemImage();
 
                                 }
 

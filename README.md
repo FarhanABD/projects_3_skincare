@@ -1,7 +1,6 @@
 # skincare_app
-
-A new Flutter project.
-
+This is Our Team's Projects of Flutter Mobile with Android Studio App
+We Make This App for our final projects task, hope you like it :)
 ## Getting Started
 
 This project is a starting point for a Flutter application.

@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:skincare_app/admin/admin_login.dart';
 import 'package:http/http.dart' as http;
+import 'package:skincare_app/api_connection/api_connection.dart';
 
 class AdminUploadItemsScreen extends StatefulWidget {
 
@@ -196,22 +196,69 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
     //-------- Hasil Request Image Dari Imgur API----------------------------//
     var resultFromImgurApi = String.fromCharCodes(responseDataFromImgurApi);
 
-    //-------- UNTUK MEMUNCULKAN LINK DARI FOTO PRODUK -----------------------//
-    print("Result :: ");
-    print(resultFromImgurApi);
-
     Map<String, dynamic> jsonRes = json.decode(resultFromImgurApi);
-    imageLink = ( jsonRes["data"]["Link"]).toString();
-    String deleteHash = ( jsonRes["data"]["deletehash"]).toString();
+    imageLink = (jsonRes["data"]["link"]).toString();
+    String deleteHash = (jsonRes["data"]["deletehash"]).toString();
 
-    //-------- UNTUK NGETEST API DARI FUNGSI IMAGELINK------------------------//
-    print("imageLink :: ");
-    print(imageLink);
+    saveItemInfoToDatabase();
 
-    //-------- UNTUK NGETEST API DARI FUNSGI DELETEHASH-----------------------//
-    print("deleteHash :: ");
-    print(deleteHash);
+  }
 
+  saveItemInfoToDatabase() async
+  {
+    //--------------- LIST UNTUK MEMBERI PILIHAN OPSI-------------------------//
+    List<String> tagsList = tagsController.text.split(',');
+    List<String> varianList = varianController.text.split(',');
+    List<String> sizeList = sizeController.text.split(',');
+
+    try
+    {
+        var response = await http.post(
+          Uri.parse(Api.uploadNewItem),
+          body: {
+            'item_id':'1',
+            'name': nameController.text.trim().toString(),
+            'rating': ratingController.text.trim().toString(),
+            'tags': tagsList.toString(),
+            'price': priceController.text.trim().toString(),
+            'varian': varianList.toString(),
+            'sizes': sizeList.toString(),
+            'description': descriptionController.text.trim().toString(),
+            'image': imageLink.toString(),
+          },
+      );
+
+        if(response.statusCode == 200){
+
+          var ResBodyOfUploadItem = jsonDecode(response.body);
+          if(ResBodyOfUploadItem['success'] == true)
+          {
+            Fluttertoast.showToast(msg: "New Item Uploaded Succesfully :)");
+
+
+            setState(() {
+              pickedImageXFile = null;
+              nameController.clear();
+              ratingController.clear();
+              tagsController.clear();
+              priceController.clear();
+              varianController.clear();
+              sizeController.clear();
+              descriptionController.clear();
+            });
+            Get.to(AdminUploadItemsScreen());
+
+          }
+          else{
+            Fluttertoast.showToast(msg: "Unsuccesfull To Upload New Items :(");
+          }
+        }
+    }
+    catch (errorMsg)
+    {
+      print("Error: " + errorMsg.toString());
+
+    }
   }
   
 
@@ -239,8 +286,19 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         ),
         centerTitle: true,
         leading: IconButton(
+          //------------- FUNGSI TOMBOL "X" DI FORM UPLOAD BARANG ------------//
           onPressed: (){
-            Get.to(AdminLoginScreen());
+            setState(() {
+              pickedImageXFile = null;
+              nameController.clear();
+              ratingController.clear();
+              tagsController.clear();
+              priceController.clear();
+              varianController.clear();
+              sizeController.clear();
+              descriptionController.clear();
+            });
+            Get.to(AdminUploadItemsScreen());
           },
           icon: const Icon(
             Icons.clear
@@ -249,7 +307,9 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         actions: [
           TextButton(
               onPressed: (){
-                Get.to(AdminLoginScreen());
+               Fluttertoast.showToast(msg: "Uploading Now....");
+
+               uploadItemImage();
               },
             child: const Text(
               "Done",
@@ -613,7 +673,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                           const SizedBox(height: 18,),
 
 
-                          // Button Login
+                          // Button Upload
                           Material(
                             color: Colors.pink,
                             borderRadius: BorderRadius.circular(30),
@@ -621,6 +681,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                               onTap: (){
                                 if (formKey.currentState!.validate())
                                 {
+                                  Fluttertoast.showToast(msg: "Uploading Now..");
                                   uploadItemImage();
 
                                 }

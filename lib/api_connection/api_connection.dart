@@ -2,6 +2,7 @@ class Api{
   static const hostConnect = "http://192.168.24.34/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
+  static const hostUploadItem = "$hostConnect/items";
 
 
   // Signup User
@@ -11,6 +12,9 @@ class Api{
 
   // LOGIN ADMIN
   static const adminlogin = "$hostConnectAdmin/login.php";
+
+  // UPLOAD NEW ITEMS TO DATABASE
+  static const uploadNewItem = "$hostUploadItem/upload.php";
 
 
 }

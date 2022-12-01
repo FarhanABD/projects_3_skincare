@@ -5,11 +5,8 @@ import 'package:get/get.dart';
 import 'package:skincare_app/admin/admin_upload_items.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/authentication/login_screen.dart';
-import 'package:skincare_app/users/authentication/signup_screen.dart';
 import 'package:http/http.dart' as http;
-import 'package:skincare_app/users/fragments/dashboard_fragments.dart';
-import 'package:skincare_app/users/model/user.dart';
-import 'package:skincare_app/users/userPreferences/user_preferences.dart';
+
 
 class AdminLoginScreen extends StatefulWidget {
   const AdminLoginScreen({Key? key}) : super(key: key);

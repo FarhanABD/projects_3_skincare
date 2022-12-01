@@ -8,8 +8,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:skincare_app/api_connection/api_connection.dart';
 
-class AdminUploadItemsScreen extends StatefulWidget {
 
+
+class AdminUploadItemsScreen extends StatefulWidget {
   @override
   State<AdminUploadItemsScreen> createState() => _AdminUploadItemsScreenState();
 }
@@ -177,12 +178,14 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
   uploadItemImage() async
   {
     var requestImgurApi = http.MultipartRequest(
-      "POST",
-      Uri.parse("https://api.imgur.com/3/image")
+        "POST",
+        Uri.parse("https://api.imgur.com/3/image")
     );
     String imageName = DateTime.now().millisecondsSinceEpoch.toString();
     requestImgurApi.fields['title'] = imageName;
-    requestImgurApi.headers['Authorization'] = "Client-ID " + "97f174c40b9a6e4";
+    // requestImgurApi.headers['Authorization'] = "Client-ID " + "97f174c40b9a6e4";
+    requestImgurApi.headers['Authorization'] = "Client-ID " + "ec8c74ecd4356a8";
+
 
     var imageFile = await http.MultipartFile.fromPath(
       'image',
@@ -191,14 +194,18 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
     );
     requestImgurApi.files.add(imageFile);
     var responseFromImgurApi = await requestImgurApi.send();
-
     var responseDataFromImgurApi = await responseFromImgurApi.stream.toBytes();
     //-------- Hasil Request Image Dari Imgur API----------------------------//
     var resultFromImgurApi = String.fromCharCodes(responseDataFromImgurApi);
 
+    print("Result :: ");
+    print(resultFromImgurApi);
+
+
     Map<String, dynamic> jsonRes = json.decode(resultFromImgurApi);
     imageLink = (jsonRes["data"]["link"]).toString();
-    String deleteHash = (jsonRes["data"]["deletehash"]).toString();
+
+
 
     saveItemInfoToDatabase();
 
@@ -213,46 +220,48 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
 
     try
     {
-        var response = await http.post(
-          Uri.parse(Api.uploadNewItem),
-          body: {
-            'item_id':'1',
-            'name': nameController.text.trim().toString(),
-            'rating': ratingController.text.trim().toString(),
-            'tags': tagsList.toString(),
-            'price': priceController.text.trim().toString(),
-            'varian': varianList.toString(),
-            'sizes': sizeList.toString(),
-            'description': descriptionController.text.trim().toString(),
-            'image': imageLink.toString(),
-          },
+      var response = await http.post(
+        Uri.parse(Api.uploadNewItem),
+        body: {
+          'item_id':'1',
+          'name': nameController.text.trim().toString(),
+          'rating': ratingController.text.trim().toString(),
+          'tags': tagsList.toString(),
+          'price': priceController.text.trim().toString(),
+          'varian': varianList.toString(),
+          'sizes': sizeList.toString(),
+          'description': descriptionController.text.trim().toString(),
+          'image': imageLink.toString(),
+        },
       );
 
-        if(response.statusCode == 200){
+      if(response.statusCode == 200){
 
-          var ResBodyOfUploadItem = jsonDecode(response.body);
-          if(ResBodyOfUploadItem['success'] == true)
-          {
-            Fluttertoast.showToast(msg: "New Item Uploaded Succesfully :)");
+        var ResBodyOfUploadItem = jsonDecode(response.body);
+        if(ResBodyOfUploadItem['success'] == true)
+        {
+          Fluttertoast.showToast(msg: "New Item Uploaded Succesfully :)");
 
 
-            setState(() {
-              pickedImageXFile = null;
-              nameController.clear();
-              ratingController.clear();
-              tagsController.clear();
-              priceController.clear();
-              varianController.clear();
-              sizeController.clear();
-              descriptionController.clear();
-            });
-            Get.to(AdminUploadItemsScreen());
-
-          }
-          else{
-            Fluttertoast.showToast(msg: "Unsuccesfull To Upload New Items :(");
-          }
+          setState(() {
+            pickedImageXFile = null;
+            nameController.clear();
+            ratingController.clear();
+            tagsController.clear();
+            priceController.clear();
+            varianController.clear();
+            sizeController.clear();
+            descriptionController.clear();
+          });
+          Get.to(AdminUploadItemsScreen());
         }
+        else{
+          Fluttertoast.showToast(msg: "Unsuccesfull To Upload New Items :(");
+        }
+      }
+      else {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
     }
     catch (errorMsg)
     {
@@ -260,7 +269,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
 
     }
   }
-  
+
 
   Widget uploadItemsFormScreen(){
     return Scaffold(
@@ -270,8 +279,8 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-
                 Colors.white,
+                Colors.pinkAccent
               ],
             ),
           ),
@@ -280,7 +289,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         title: const Text(
           "Upload Form",
           style: TextStyle(
-            color: Colors.black
+              color: Colors.black
           ),
 
         ),
@@ -301,16 +310,16 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             Get.to(AdminUploadItemsScreen());
           },
           icon: const Icon(
-            Icons.clear
+              Icons.clear
           ),
         ),
         actions: [
           TextButton(
-              onPressed: (){
-               Fluttertoast.showToast(msg: "Uploading Now....");
+            onPressed: (){
+              Fluttertoast.showToast(msg: "Uploading Now....");
 
-               uploadItemImage();
-              },
+              uploadItemImage();
+            },
             child: const Text(
               "Done",
               style: TextStyle(
@@ -329,10 +338,10 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             width: MediaQuery.of(context).size.width * 0.8,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: FileImage(
-                  File(pickedImageXFile!.path),
-                ),
-                fit: BoxFit.cover
+                  image: FileImage(
+                    File(pickedImageXFile!.path),
+                  ),
+                  fit: BoxFit.cover
               ),
             ),
           ),

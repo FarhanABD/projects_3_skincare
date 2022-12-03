@@ -2,7 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/item/item_details_screen.dart';
 import 'package:skincare_app/users/model/skincare.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
@@ -18,7 +21,7 @@ class HomeFragmentScreen extends StatelessWidget
     try
     {
       var res = await http.post(
-        Uri.parse(Api.getTrendingMostPopularItem)
+          Uri.parse(Api.getTrendingMostPopularItem)
       );
 
       if (res.statusCode == 200)
@@ -42,6 +45,40 @@ class HomeFragmentScreen extends StatelessWidget
       print("Error:: " + errorMsg.toString());
     }
     return trendingSkincareItemsList;
+
+  }
+
+  //-------MENAMPILKAN SEMUA KOLEKSI ITEM UNTUK NEW COLLECTION SECTION -------//
+  Future<List<Skincare>> getAllSkincareItems() async
+  {
+    List<Skincare> allSkincareItemsList = [];
+    try
+    {
+      var res = await http.post(
+          Uri.parse(Api.getAllItems)
+      );
+
+      if (res.statusCode == 200)
+      {
+        var responseBodyOfAllSkincare = jsonDecode(res.body);
+        if(responseBodyOfAllSkincare["success"] == true)
+        {
+          (responseBodyOfAllSkincare["skincareItemsData"] as List).forEach((eachRecord)
+          {
+            allSkincareItemsList.add(Skincare.fromJson(eachRecord));
+          });
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Error, Status Code Is Not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error:: " + errorMsg.toString());
+    }
+    return allSkincareItemsList;
 
   }
 
@@ -86,6 +123,8 @@ class HomeFragmentScreen extends StatelessWidget
               ),
             ),
           ),
+
+          allItemsWidget(context),
         ],
       ),
     );
@@ -115,12 +154,12 @@ class HomeFragmentScreen extends StatelessWidget
           suffixIcon: IconButton(
             onPressed: (){
 
-          },
-        icon: const Icon(
-          Icons.shopping_cart,
-          color: Colors.pinkAccent,
-        ),
-         ),
+            },
+            icon: const Icon(
+              Icons.shopping_cart,
+              color: Colors.pinkAccent,
+            ),
+          ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
@@ -169,14 +208,14 @@ class HomeFragmentScreen extends StatelessWidget
         if(dataSnapShot.data == null)
         {
           return const Center(
-            child: Text(
-              "No Trending Items Found",
-            )
+              child: Text(
+                "No Trending Items Found",
+              )
           );
         }
         if(dataSnapShot.data!.length > 0)
         {
-          return Container(
+          return SizedBox(
             height: 260,
             child: ListView.builder(
               itemCount: dataSnapShot.data!.length,
@@ -187,7 +226,7 @@ class HomeFragmentScreen extends StatelessWidget
                 return GestureDetector(
                   onTap: ()
                   {
-
+                    Get.to(ItemDetailsScreen(itemInfo: eachSkincareItemsData));
                   },
                   //--------- UNTUK MENGATUR JARAK GAMBAR PRODUK WAKTU DI HOMESCREEN---//
                   child: Container
@@ -201,7 +240,7 @@ class HomeFragmentScreen extends StatelessWidget
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.white,
+                      color: Colors.purpleAccent,
                       boxShadow:
                       const [
                         BoxShadow(
@@ -253,7 +292,7 @@ class HomeFragmentScreen extends StatelessWidget
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                        color: Colors.purpleAccent,
+                                        color: Colors.white,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -265,7 +304,7 @@ class HomeFragmentScreen extends StatelessWidget
                                   Text(
                                     eachSkincareItemsData.price.toString(),
                                     style: const TextStyle(
-                                      color: Colors.purpleAccent,
+                                      color: Colors.white,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -286,7 +325,7 @@ class HomeFragmentScreen extends StatelessWidget
                                     itemCount: 5,
                                     itemBuilder: (context, c)=> const Icon(
                                       Icons.star,
-                                      color: Colors.pinkAccent,
+                                      color: Colors.amber,
                                     ),
                                     onRatingUpdate: (updateRating){},
                                     ignoreGestures: true,
@@ -298,8 +337,9 @@ class HomeFragmentScreen extends StatelessWidget
 
                                   Text(
                                     "(" + eachSkincareItemsData.rating.toString() + ")",
-                                    style: TextStyle(
-                                      color: Colors.pinkAccent,
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
 
@@ -323,6 +363,162 @@ class HomeFragmentScreen extends StatelessWidget
           );
         }
       },
+    );
+  }
+
+  allItemsWidget(context)
+  {
+    return FutureBuilder
+      (
+      future: getAllSkincareItems(),
+        builder: (context, AsyncSnapshot<List<Skincare>> dataSnapShot)
+        {
+          if(dataSnapShot.connectionState == ConnectionState.waiting)
+          {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          if(dataSnapShot.data == null)
+          {
+            return const Center(
+                child: Text(
+                  "No Trending Items Found",
+                )
+            );
+          }
+          if(dataSnapShot.data!.length > 0)
+            {
+              return ListView.builder(
+                itemCount: dataSnapShot.data!.length,
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                itemBuilder: (context, index)
+                {
+                  Skincare eachSkincareItemsRecord = dataSnapShot.data![index];
+                  return GestureDetector(
+                    onTap: ()
+                    {
+                      Get.to(ItemDetailsScreen(itemInfo: eachSkincareItemsRecord));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(
+                          16,
+                        index == 0 ? 16 : 8,
+                        16,
+                        index == dataSnapShot.data!.length - 1 ? 16 : 8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.purpleAccent,
+                        boxShadow:
+                        const [
+                          BoxShadow(
+                            offset: Offset(0,0),
+                            blurRadius: 6,
+                            color: Colors.pink,
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          //--------- DISPLAY NAME, PRICE AND TAGS OF ITEMS---//
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 15),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //----------------- NAME OF ITEMS ----------//
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          eachSkincareItemsRecord.name!,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+
+                                      //----------- PRICE OF ITEMS------------//
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 12, right: 12),
+                                        child: Text(
+                               "Rp" + eachSkincareItemsRecord.price.toString(),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.white,
+                              ),
+                            ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 16,),
+
+                                  //------------ TAGS OF ITEMS ---------------//
+                                  Text(
+                                    "Tags: \n"+ eachSkincareItemsRecord.tags.toString().replaceAll("[", "").replaceAll("]", ""),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          //------ DISPLAY ALL ITEM IMAGES -------------------//
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(20),
+                              bottomRight: Radius.circular(20)
+                            ),
+                            child: FadeInImage(
+                              height: 130,
+                              width: 130,
+                              fit: BoxFit.cover,
+                              placeholder: const AssetImage("images/placeholder.png"),
+                              image: NetworkImage(
+                                eachSkincareItemsRecord.image!,
+                              ),
+                              imageErrorBuilder: (context, error, stackTraceError)
+                              {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.broken_image_outlined,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          else
+          {
+            return const Center(
+              child: Text("Empty, No Data"),
+            );
+          }
+        }
     );
   }
 }

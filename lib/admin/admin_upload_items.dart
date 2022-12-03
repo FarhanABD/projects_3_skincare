@@ -8,8 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:skincare_app/api_connection/api_connection.dart';
 
-
-
 class AdminUploadItemsScreen extends StatefulWidget {
   @override
   State<AdminUploadItemsScreen> createState() => _AdminUploadItemsScreenState();

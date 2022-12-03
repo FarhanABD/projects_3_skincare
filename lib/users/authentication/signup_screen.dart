@@ -44,7 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
         if(resbodyofvalidateEmail['emailFound'] == true)
         {
-          Fluttertoast.showToast(msg: "Email Sudah Terdaftar :(");
+          Fluttertoast.showToast(msg: "Email Is Already Exist :(");
 
         }
         else{
@@ -306,7 +306,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                                       ),
                                     ),
                                   ),
-
                                   const SizedBox(height: 18,),
 
 

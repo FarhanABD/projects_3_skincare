@@ -144,6 +144,7 @@ class HomeFragmentScreen extends StatelessWidget
             icon: const Icon(
               Icons.search,
               color: Colors.pinkAccent,
+
             ),
           ),
           hintText: "Search Item Here..",
@@ -165,7 +166,7 @@ class HomeFragmentScreen extends StatelessWidget
               width: 2,
               color: Colors.pinkAccent,
             ),
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(20),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
@@ -240,13 +241,15 @@ class HomeFragmentScreen extends StatelessWidget
                     ),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.purpleAccent,
+                      color: Colors.white,
+                      // color: Colors.pink,
                       boxShadow:
                       const [
                         BoxShadow(
                           offset: Offset(0,3),
                           blurRadius: 6,
-                          color: Colors.pink,
+                          color: Colors.pinkAccent,
+                          // color: Colors.white
                         ),
                       ],
                     ),
@@ -292,7 +295,7 @@ class HomeFragmentScreen extends StatelessWidget
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                        color: Colors.white,
+                                        color: Colors.pink,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -302,9 +305,9 @@ class HomeFragmentScreen extends StatelessWidget
                                     width: 10,
                                   ),
                                   Text(
-                                    eachSkincareItemsData.price.toString(),
+                                    "Rp" + eachSkincareItemsData.price.toString(),
                                     style: const TextStyle(
-                                      color: Colors.white,
+                                      color: Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -411,13 +414,14 @@ class HomeFragmentScreen extends StatelessWidget
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.purpleAccent,
+                        color: Colors.white54,
                         boxShadow:
                         const [
                           BoxShadow(
                             offset: Offset(0,0),
                             blurRadius: 6,
-                            color: Colors.pink,
+                            // color: Colors.pinkAccent,
+                            color: Colors.pinkAccent,
                           ),
                         ],
                       ),
@@ -441,7 +445,7 @@ class HomeFragmentScreen extends StatelessWidget
                                           style: const TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 18,
-                                            color: Colors.white,
+                                            color: Colors.pink,
                                           ),
                                         ),
                                       ),
@@ -455,8 +459,8 @@ class HomeFragmentScreen extends StatelessWidget
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 18,
-                                color: Colors.white,
+                                fontSize: 16,
+                                color: Colors.black,
                               ),
                             ),
                                       ),
@@ -473,7 +477,7 @@ class HomeFragmentScreen extends StatelessWidget
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 12,
-                                      color: Colors.white,
+                                      color: Colors.pinkAccent,
                                     ),
                                   ),
                                 ],

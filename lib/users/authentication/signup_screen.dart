@@ -84,11 +84,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
           Fluttertoast.showToast(msg: "SignUp Succesfully :)");
 
           setState(() {
+
             nameController.clear();
             emailController.clear();
             passwordController.clear();
 
           });
+          Get.to(LoginScreen());
         }
         else{
           Fluttertoast.showToast(msg: "SignUp Unsuccesfull :(");

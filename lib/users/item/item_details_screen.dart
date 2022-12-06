@@ -23,7 +23,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.pinkAccent,
       body: Stack(
         children: [
           //----------- DISPLAY DETAILS ITEM IMAGES--------------------------//
@@ -60,7 +60,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
       height: MediaQuery.of(Get.context!).size.height * 0.6,
       width: MediaQuery.of(Get.context!).size.width,
       decoration: const BoxDecoration(
-        color: Colors.white54,
+        color: Colors.white,
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(30),
           topRight: Radius.circular(30),
@@ -97,7 +97,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: const TextStyle(
-                color: Colors.pink,
+                color: Colors.pinkAccent,
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
@@ -214,7 +214,151 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
             ),
 
             //SIZE
+            const Text(
+              "Size:",
+              style:TextStyle(
+                fontSize: 18,
+                color: Colors.pinkAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8,),
+            Wrap(
+              runSpacing: 8,
+              spacing: 8,
+              children: List.generate(widget.itemInfo!.sizes!.length, (index)  {
+                return Obx(
+                    ()=> GestureDetector(
+                      onTap: ()
+                      {
+                        itemDetailsController.setSizeItem(index);
+                      },
+                      child: Container(
+                        height: 35,
+                        width: 60,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2,
+                            color: itemDetailsController.size == index ? Colors.pinkAccent : Colors.pinkAccent,
 
+                          ),
+                          borderRadius: BorderRadius.circular(20),
+                          color: itemDetailsController.size == index ?
+                          Colors.pinkAccent.withOpacity(0.4) : Colors.white,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.itemInfo!.sizes![index].replaceAll("[", "").replaceAll("]", ""),
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.pinkAccent[700],
+                          ),
+                        ),
+                      ),
+                    ),
+                );
+              }),
+            ),
+
+            const SizedBox(height: 20),
+
+            //VARIAN
+            const Text(
+              "Varian:",
+              style:TextStyle(
+                fontSize: 18,
+                color: Colors.pinkAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8,),
+            Wrap(
+              runSpacing: 8,
+              spacing: 8,
+              children: List.generate(widget.itemInfo!.varian!.length, (index)  {
+                return Obx(
+                      ()=> GestureDetector(
+                    onTap: ()
+                    {
+                      itemDetailsController.setVarianItem(index);
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: itemDetailsController.varian == index ? Colors.pinkAccent
+                              : Colors.pinkAccent,
+
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        color: itemDetailsController.varian == index ?
+                        Colors.pinkAccent.withOpacity(0.4) : Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.itemInfo!.varian![index].replaceAll("[", "").replaceAll("]", ""),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.pinkAccent[700],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            // DESCRIPTION ITEMS
+            const Text(
+              "Description:",
+              style:TextStyle(
+                fontSize: 18,
+                color: Colors.pinkAccent,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              widget.itemInfo!.description!,
+              textAlign: TextAlign.justify,
+              style: const TextStyle(
+                color: Colors.pink,
+              ),
+            ),
+
+            const SizedBox(height: 30,),
+
+            //ADD TO CART BUTTON
+            Material(
+              elevation: 4,
+              color: Colors.pinkAccent,
+              borderRadius: BorderRadius.circular(25),
+              child: InkWell(
+                onTap: ()
+                {
+
+                },
+                borderRadius: BorderRadius.circular(25),
+                child: Container(
+                  alignment: Alignment.center,
+                  height: 50,
+                  child: const Text(
+                    "Add To Cart",
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30,),
           ],
         ),
       ),

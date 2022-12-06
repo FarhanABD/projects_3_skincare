@@ -99,9 +99,9 @@ class HomeFragmentScreen extends StatelessWidget
           const Padding(
             padding: const EdgeInsets.symmetric(horizontal: 18),
             child: Text(
-              "Trending",
+              "Popular",
               style: TextStyle(
-                color: Colors.pinkAccent,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -117,7 +117,7 @@ class HomeFragmentScreen extends StatelessWidget
             child: Text(
               "New Collections",
               style: TextStyle(
-                color: Colors.pinkAccent,
+                color: Colors.black,
                 fontWeight: FontWeight.bold,
                 fontSize: 24,
               ),
@@ -143,7 +143,7 @@ class HomeFragmentScreen extends StatelessWidget
             },
             icon: const Icon(
               Icons.search,
-              color: Colors.pinkAccent,
+              color: Colors.black,
 
             ),
           ),
@@ -158,26 +158,26 @@ class HomeFragmentScreen extends StatelessWidget
             },
             icon: const Icon(
               Icons.shopping_cart,
-              color: Colors.pinkAccent,
+              color: Colors.black,
             ),
           ),
           border: OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: Colors.pinkAccent,
+              color: Colors.black,
             ),
             borderRadius: BorderRadius.circular(20),
           ),
           enabledBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: Colors.pinkAccent,
+              color: Colors.black,
             ),
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(
               width: 2,
-              color: Colors.pinkAccent,
+              color: Colors.black,
             ),
 
           ),
@@ -295,7 +295,7 @@ class HomeFragmentScreen extends StatelessWidget
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
-                                        color: Colors.pink,
+                                        color: Colors.pinkAccent,
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
                                       ),
@@ -414,7 +414,7 @@ class HomeFragmentScreen extends StatelessWidget
                       ),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        color: Colors.white54,
+                        color: Colors.white,
                         boxShadow:
                         const [
                           BoxShadow(

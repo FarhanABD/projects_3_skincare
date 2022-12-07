@@ -1,9 +1,10 @@
 class Api{
-  static const hostConnect = "http://192.168.1.23/api_skincare";
+  static const hostConnect = "http://192.168.24.43/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
   static const hostItems = "$hostConnect/skincare";
+  static const hostCart = "$hostConnect/cart";
 
 
   // Signup User
@@ -22,6 +23,9 @@ class Api{
 
   // API ITEMS FROM DATABASE
   static const getAllItems = "$hostItems/all.php";
+
+  // API CART ITEMS FROM DATABASE
+  static const addToCart = "$hostCart/add.php";
 
 
 

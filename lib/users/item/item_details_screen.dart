@@ -1,16 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/controllers/item_details_controller.dart';
 import 'package:skincare_app/users/model/skincare.dart';
+import 'package:http/http.dart' as http;
+import 'package:skincare_app/users/userPreferences/current_user.dart';
+
 
 class ItemDetailsScreen extends StatefulWidget
 {
   final Skincare? itemInfo;
-
   ItemDetailsScreen({this.itemInfo});
 
   @override
@@ -20,6 +23,46 @@ class ItemDetailsScreen extends StatefulWidget
 class _ItemDetailsScreenState extends State<ItemDetailsScreen>
 {
   final itemDetailsController = Get.put(ItemDetailsController());
+  //------ MEMANGGIL ID USER YANG MEMASUKKAN PESANAN KE KERANJANG ------------//
+  final currentOnlineUser = Get.put(CurrentUser());
+
+  addItemToCart() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(Api.addToCart),
+        body: {
+          "user_id": currentOnlineUser.user.user_id.toString(),
+          "item_id": widget.itemInfo!.item_id.toString(),
+          "quantity": itemDetailsController.quantity.toString(),
+          "varians": widget.itemInfo!.varians![itemDetailsController.varian],
+          "size": widget.itemInfo!.sizes![itemDetailsController.size],
+        },
+      );
+
+      if(res.statusCode == 200) //from flutter app the connection with api to server - success
+          {
+        var resBodyOfAddCart = jsonDecode(res.body);
+        if(resBodyOfAddCart['success'] == true)
+        {
+          Fluttertoast.showToast(msg: "item saved to Cart Successfully.");
+        }
+        else
+        {
+          Fluttertoast.showToast(msg: "Error Occur. Item not saved to Cart and Try Again.");
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error :: " + errorMsg.toString());
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -275,7 +318,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
             Wrap(
               runSpacing: 8,
               spacing: 8,
-              children: List.generate(widget.itemInfo!.varian!.length, (index)  {
+              children: List.generate(widget.itemInfo!.varians!.length, (index)  {
                 return Obx(
                       ()=> GestureDetector(
                     onTap: ()
@@ -298,7 +341,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        widget.itemInfo!.varian![index].replaceAll("[", "").replaceAll("]", ""),
+                        widget.itemInfo!.varians![index].replaceAll("[", "").replaceAll("]", ""),
                         style: TextStyle(
                           fontSize: 16,
                           color: Colors.pinkAccent[700],
@@ -339,9 +382,9 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
               color: Colors.pinkAccent,
               borderRadius: BorderRadius.circular(25),
               child: InkWell(
-                onTap: ()
+                 onTap: ()
                 {
-
+                  addItemToCart();
                 },
                 borderRadius: BorderRadius.circular(25),
                 child: Container(

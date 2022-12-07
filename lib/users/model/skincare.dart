@@ -4,7 +4,7 @@ class Skincare{
   double? rating;
   List<String>? tags;
   double? price;
-  List<String>? varian;
+  List<String>? varians;
   List<String>? sizes;
   String? description;
   String? image;
@@ -15,7 +15,7 @@ class Skincare{
     this.rating,
     this.tags,
     this.price,
-    this.varian,
+    this.varians,
     this.sizes,
     this.description,
     this.image,
@@ -27,7 +27,7 @@ class Skincare{
     rating: double.parse(json["rating"]),
     tags: json["tags"].toString().split(", "),
     price: double.parse(json["price"]),
-    varian: json["varian"].toString().split(", "),
+    varians: json["varians"].toString().split(", "),
     sizes: json["sizes"].toString().split(", "),
     description: json["description"],
     image: json["image"],

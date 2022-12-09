@@ -36,11 +36,10 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
           "user_id": currentOnlineUser.user.user_id.toString(),
           "item_id": widget.itemInfo!.item_id.toString(),
           "quantity": itemDetailsController.quantity.toString(),
-          "varians": widget.itemInfo!.varians![itemDetailsController.varian],
+          "varian": widget.itemInfo!.varians![itemDetailsController.varian],
           "size": widget.itemInfo!.sizes![itemDetailsController.size],
         },
       );
-
       if(res.statusCode == 200) //from flutter app the connection with api to server - success
           {
         var resBodyOfAddCart = jsonDecode(res.body);
@@ -154,65 +153,64 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
               children: [
                 //---------- DSIPLAY ITEMS RATING + TAGS + PRICE -------------//
                 Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        //---RATING BAR + RATING NUMBER--//
-                        Row(
-                          children: [
-                            //------------- DISPLAY RATING BAR ---------------//
-                            RatingBar.builder(
-                              initialRating: widget.itemInfo!.rating!,
-                              minRating: 1,
-                              direction: Axis.horizontal,
-                              allowHalfRating: true,
-                              itemCount: 5,
-                              itemBuilder: (context, c)=> const Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                              onRatingUpdate: (updateRating){},
-                              ignoreGestures: true,
-                              unratedColor: Colors.grey,
-                              itemSize: 20,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      //---RATING BAR + RATING NUMBER--//
+                      Row(
+                        children: [
+                          //------------- DISPLAY RATING BAR ---------------//
+                          RatingBar.builder(
+                            initialRating: widget.itemInfo!.rating!,
+                            minRating: 1,
+                            direction: Axis.horizontal,
+                            allowHalfRating: true,
+                            itemCount: 5,
+                            itemBuilder: (context, c)=> const Icon(
+                              Icons.star,
+                              color: Colors.amber,
                             ),
-                            const SizedBox(width: 8,),
-                            Text(
-                              "(" + widget.itemInfo!.rating.toString() + ")",
-                              style: const TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            onRatingUpdate: (updateRating){},
+                            ignoreGestures: true,
+                            unratedColor: Colors.grey,
+                            itemSize: 20,
+                          ),
+                          const SizedBox(width: 8,),
+                          Text(
+                            "(" + widget.itemInfo!.rating.toString() + ")",
+                            style: const TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
                             ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10,),
 
-                          ],
-                        ),
-                        const SizedBox(height: 10,),
-
-                        //---- RATING TAGS ------//
-                        Text(
-                          widget.itemInfo!
-                              .tags!.toString().replaceAll("[", "").replaceAll("]", ""),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
+                      //---- RATING TAGS ------//
+                      Text(
+                        widget.itemInfo!
+                            .tags!.toString().replaceAll("[", "").replaceAll("]", ""),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black
-                          ),
                         ),
-                        const SizedBox(height: 16,),
+                      ),
+                      const SizedBox(height: 16,),
 
-                        //---- RATING PRICE -----//
-                        Text(
-                          "Rp" + widget.itemInfo!.price.toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
+                      //---- RATING PRICE -----//
+                      Text(
+                        "Rp" + widget.itemInfo!.price.toString(),
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 //----- DISPLAY ITEMS COUNTER --------------------------------//
@@ -271,34 +269,34 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
               spacing: 8,
               children: List.generate(widget.itemInfo!.sizes!.length, (index)  {
                 return Obx(
-                    ()=> GestureDetector(
-                      onTap: ()
-                      {
-                        itemDetailsController.setSizeItem(index);
-                      },
-                      child: Container(
-                        height: 35,
-                        width: 60,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2,
-                            color: itemDetailsController.size == index ? Colors.pinkAccent : Colors.pinkAccent,
+                      ()=> GestureDetector(
+                    onTap: ()
+                    {
+                      itemDetailsController.setSizeItem(index);
+                    },
+                    child: Container(
+                      height: 35,
+                      width: 60,
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          width: 2,
+                          color: itemDetailsController.size == index ? Colors.pinkAccent : Colors.pinkAccent,
 
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          color: itemDetailsController.size == index ?
-                          Colors.pinkAccent.withOpacity(0.4) : Colors.white,
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          widget.itemInfo!.sizes![index].replaceAll("[", "").replaceAll("]", ""),
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.pinkAccent[700],
-                          ),
+                        borderRadius: BorderRadius.circular(20),
+                        color: itemDetailsController.size == index ?
+                        Colors.pinkAccent.withOpacity(0.4) : Colors.white,
+                      ),
+                      alignment: Alignment.center,
+                      child: Text(
+                        widget.itemInfo!.sizes![index].replaceAll("[", "").replaceAll("]", ""),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.pinkAccent[700],
                         ),
                       ),
                     ),
+                  ),
                 );
               }),
             ),
@@ -382,7 +380,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
               color: Colors.pinkAccent,
               borderRadius: BorderRadius.circular(25),
               child: InkWell(
-                 onTap: ()
+                onTap: ()
                 {
                   addItemToCart();
                 },

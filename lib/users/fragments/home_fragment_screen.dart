@@ -5,6 +5,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/cart/cart_list_screen.dart';
 import 'package:skincare_app/users/item/item_details_screen.dart';
 import 'package:skincare_app/users/model/skincare.dart';
 import 'package:flutter/cupertino.dart';
@@ -154,7 +155,7 @@ class HomeFragmentScreen extends StatelessWidget
           ),
           suffixIcon: IconButton(
             onPressed: (){
-
+              Get.to(CartListScreen());
             },
             icon: const Icon(
               Icons.shopping_cart,

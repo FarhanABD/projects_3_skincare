@@ -226,7 +226,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           'rating': ratingController.text.trim().toString(),
           'tags': tagsList.toString(),
           'price': priceController.text.trim().toString(),
-          'varian': varianList.toString(),
+          'varians': varianList.toString(),
           'sizes': sizeList.toString(),
           'description': descriptionController.text.trim().toString(),
           'image': imageLink.toString(),
@@ -716,8 +716,6 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                     ),
 
                     const SizedBox(height: 16,),
-
-
 
                     // Admin Login Btn
 

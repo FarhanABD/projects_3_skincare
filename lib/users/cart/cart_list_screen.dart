@@ -82,6 +82,72 @@ class _CartListScreenState extends State<CartListScreen>
     }
   }
   //---------------- END OF COUNTING TOTAL AMOUNT OF ITEMS -------------------//
+  deleteSelectedItemFromUserCartList(int cartID) async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(Api.deleteSelectedItemsFromCartList),
+        body:
+        {
+          "cart_id": cartID.toString(),
+        }
+      );
+      if(res.statusCode == 200)
+      {
+        var responseBodyFromDeleteCart = jsonDecode(res.body);
+
+        if(responseBodyFromDeleteCart["success"] == true)
+        {
+          getCurrentUserCartList();
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Error, status code is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error" + errorMsg.toString());
+
+      Fluttertoast.showToast(msg: "Error, status code is not 200");
+    }
+  }
+
+  updateQuantityInUserCart(int cartID, int newQuantity) async
+  {
+    try
+    {
+      var res = await http.post(
+          Uri.parse(Api.updateItemInCartList),
+          body:
+          {
+            "cart_id": cartID.toString(),
+            "quantity": newQuantity.toString(),
+          }
+      );
+      if(res.statusCode == 200)
+      {
+        var responseBodyOfUpdateCartQuantity = jsonDecode(res.body);
+
+        if(responseBodyOfUpdateCartQuantity["success"] == true)
+        {
+          getCurrentUserCartList();
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Error, status code is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error" + errorMsg.toString());
+
+      Fluttertoast.showToast(msg: "Error, status code is not 200");
+    }
+  }
 
   @override
   void initState() {
@@ -111,7 +177,7 @@ class _CartListScreenState extends State<CartListScreen>
                     {
                       cartListController.cartList.forEach((eachItem)
                       {
-                        cartListController.addSelectedItem(eachItem.item_id!);
+                        cartListController.addSelectedItem(eachItem.cart_id!);
                       });
                     }
 
@@ -122,7 +188,7 @@ class _CartListScreenState extends State<CartListScreen>
                       ? Icons.check_box
                       : Icons.check_box_outline_blank,
                   color: cartListController.isSelectedAll
-                      ? Colors.pinkAccent
+                      ? Colors.white
                       : Colors.grey,
                 ),
               ),
@@ -172,16 +238,17 @@ class _CartListScreenState extends State<CartListScreen>
                     );
                     if(responseFromDialogBox == "DeletingItems")
                     {
-                      cartListController.selectedItemList.forEach((eachSelectedItem)
+                      cartListController.selectedItemList.forEach((SelectedItemUserCartID)
                       {
-
+                        deleteSelectedItemFromUserCartList(SelectedItemUserCartID);
                       });
                     }
+                    calculateTotalAmount();
                   },
                   icon: const Icon(
                     Icons.delete_sweep,
                     size: 26,
-                    color: Colors.pinkAccent,
+                    color: Colors.white,
                   ),
                 );
               }
@@ -225,12 +292,20 @@ class _CartListScreenState extends State<CartListScreen>
                               return IconButton(
                                   onPressed: ()
                                   {
-                                    cartListController.addSelectedItem(cartModel.item_id!);
+                                    if(cartListController.selectedItemList.contains(cartModel.cart_id))
+                                      {
+                                        cartListController.deleteSelectedItem(cartModel.cart_id!);
+
+                                      }
+                                    else
+                                    {
+                                      cartListController.addSelectedItem(cartModel.cart_id!);
+                                    }
 
                                     calculateTotalAmount();
                                   },
                                 icon: Icon(
-                                  cartListController.selectedItemList.contains(cartModel.item_id) ?
+                                  cartListController.selectedItemList.contains(cartModel.cart_id) ?
                                   Icons.check_box : Icons.check_box_outline_blank,
                                   color: cartListController.isSelectedAll ? Colors.pinkAccent :
                                   Colors.grey,
@@ -328,7 +403,13 @@ class _CartListScreenState extends State<CartListScreen>
                                                   IconButton(
                                                       onPressed: ()
                                                       {
-
+                                                        if(cartModel.quantity! - 1 >= 1)
+                                                        {
+                                                          updateQuantityInUserCart(
+                                                            cartModel.cart_id!,
+                                                            cartModel.quantity! - 1,
+                                                          );
+                                                        }
                                                       },
                                                     icon: const Icon(
                                                       Icons.remove_circle_outline,
@@ -354,7 +435,10 @@ class _CartListScreenState extends State<CartListScreen>
                                                   IconButton(
                                                     onPressed: ()
                                                     {
-
+                                                      updateQuantityInUserCart(
+                                                        cartModel.cart_id!,
+                                                        cartModel.quantity! + 1,
+                                                      );
                                                     },
                                                     icon: const Icon(
                                                         Icons.add_circle_outline,

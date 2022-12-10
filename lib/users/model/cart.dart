@@ -1,4 +1,3 @@
-
 class Cart
 {
   int? cart_id;
@@ -33,9 +32,7 @@ class Cart
     this.image,
   });
 
-
-  factory Cart.fromJson(Map<String, dynamic> json) => Cart
-    (
+  factory Cart.fromJson(Map<String, dynamic> json) => Cart(
     cart_id: int.parse(json['cart_id']),
     user_id: int.parse(json['user_id']),
     item_id: int.parse(json['item_id']),

@@ -325,7 +325,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
                     },
                     child: Container(
                       height: 35,
-                      width: 60,
+                      width: 90,
                       decoration: BoxDecoration(
                         border: Border.all(
                           width: 2,

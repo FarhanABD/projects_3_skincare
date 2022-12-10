@@ -46,7 +46,7 @@ class _CartListScreenState extends State<CartListScreen>
         }
         else
         {
-          Fluttertoast.showToast(msg: "Error occured in querry");
+          Fluttertoast.showToast(msg: "Succes Executing Querry");
         }
 
         cartListController.setList(cartListOfcurrentUser);
@@ -74,24 +74,26 @@ class _CartListScreenState extends State<CartListScreen>
       {
         if(cartListController.selectedItemList.contains(itemInCart.item_id))
         {
-          double eachItemtotalAmount = (itemInCart.price!) * (double.parse(itemInCart.quantity.toString()));
+          double eachItemTotalAmount = (itemInCart.price!) * (double.parse(itemInCart.quantity.toString()));
 
-          cartListController.setTotal(cartListController.total + eachItemtotalAmount);
+          cartListController.setTotal(cartListController.total + eachItemTotalAmount);
         }
       });
     }
   }
   //---------------- END OF COUNTING TOTAL AMOUNT OF ITEMS -------------------//
+
+  //--------- DELETE USER ITEMS CART FROM CART ------------------------------//
   deleteSelectedItemFromUserCartList(int cartID) async
   {
     try
     {
       var res = await http.post(
-        Uri.parse(Api.deleteSelectedItemsFromCartList),
-        body:
-        {
-          "cart_id": cartID.toString(),
-        }
+          Uri.parse(Api.deleteSelectedItemsFromCartList),
+          body:
+          {
+            "cart_id": cartID.toString(),
+          }
       );
       if(res.statusCode == 200)
       {
@@ -104,17 +106,19 @@ class _CartListScreenState extends State<CartListScreen>
       }
       else
       {
-        Fluttertoast.showToast(msg: "Error, status code is not 200");
+        Fluttertoast.showToast(msg: "Deleted Succesfully");
       }
     }
     catch (errorMsg)
     {
       print("Error" + errorMsg.toString());
 
-      Fluttertoast.showToast(msg: "Error, status code is not 200");
+      Fluttertoast.showToast(msg: "Error" + errorMsg.toString());
     }
   }
+  //============== ENDS OF DELETING USER ITEMS FROM CART METHOD ==============//
 
+//---------------------- UPDATE QUANTITY FROM USER CART ----------------------//
   updateQuantityInUserCart(int cartID, int newQuantity) async
   {
     try
@@ -148,6 +152,7 @@ class _CartListScreenState extends State<CartListScreen>
       Fluttertoast.showToast(msg: "Error, status code is not 200");
     }
   }
+  //======= ENDS OF UPDATE QUANTITY FROM USER CART ===========================//
 
   @override
   void initState() {
@@ -160,38 +165,39 @@ class _CartListScreenState extends State<CartListScreen>
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent[500],
+        backgroundColor: Colors.pinkAccent[100],
         title: const Text(
-          "My Cart"
+            "My Cart"
         ),
         actions: [
           Obx(() =>
           //--------- TO SELECT ALL ITEMS -----------------------------------//
-              IconButton(
-                onPressed: ()
+          IconButton(
+            onPressed: ()
+            {
+              cartListController.setIsSelectedAllItems();
+              cartListController.clearAllSelectedItems();
+              
+              if(cartListController.isSelectedAll)
+              {
+                cartListController.cartList.forEach((eachItem)
                 {
-                  cartListController.setIsSelectedAllItems();
-                  cartListController.clearAllSelectedItems();
-
-                  if(cartListController.isSelectedAll)
-                    {
-                      cartListController.cartList.forEach((eachItem)
-                      {
-                        cartListController.addSelectedItem(eachItem.cart_id!);
-                      });
-                    }
-
-                  calculateTotalAmount();
-                },
-                icon: Icon(
-                  cartListController.isSelectedAll
-                      ? Icons.check_box
-                      : Icons.check_box_outline_blank,
-                  color: cartListController.isSelectedAll
-                      ? Colors.white
-                      : Colors.grey,
-                ),
-              ),
+                  cartListController.addSelectedItem(eachItem.item_id!);
+                  // cartListController.addSelectedItem(eachItem.cart_id!);
+                  // ^^^^^^^^^^^^^^^^^ SYNTAX YG BENER ^^^^^^^^^^^^^^^^^^//
+                });
+              }
+              calculateTotalAmount();
+            },
+            icon: Icon(
+              cartListController.isSelectedAll
+                  ? Icons.check_box
+                  : Icons.check_box_outline_blank,
+              color: cartListController.isSelectedAll
+                  ? Colors.pinkAccent
+                  : Colors.white,
+            ),
+          ),
           ),
 
           //------- TO DELETE ALL SELECTED ITEMS -----------------------------//
@@ -205,7 +211,7 @@ class _CartListScreenState extends State<CartListScreen>
                   onPressed: () async{
                     var responseFromDialogBox = await Get.dialog(
                       AlertDialog(
-                        backgroundColor: Colors.grey,
+                        backgroundColor: Colors.white,
                         title: const Text("Delete"),
                         content: const Text("Do you want to delete the item ?"),
                         actions: [
@@ -262,236 +268,238 @@ class _CartListScreenState extends State<CartListScreen>
         ],
       ),
       body: Obx( ()=>
-          cartListController.cartList.length > 0
-              ? ListView.builder(
-                  itemCount: cartListController.cartList.length,
-                  scrollDirection: Axis.vertical,
-                  itemBuilder: (context, index)
-                  {
-                    Cart cartModel = cartListController.cartList[index];
+      cartListController.cartList.length > 0
+          ? ListView.builder(
+        itemCount: cartListController.cartList.length,
+        scrollDirection: Axis.vertical,
+        itemBuilder: (context, index)
+        {
+          Cart cartModel = cartListController.cartList[index];
 
-                    Skincare skincareModel = Skincare(
-                      item_id: cartModel.item_id,
-                      varians: cartModel.varians,
-                      image: cartModel.image,
-                      name: cartModel.name,
-                      price: cartModel.price,
-                      rating: cartModel.rating,
-                      sizes: cartModel.sizes,
-                      description: cartModel.description,
-                      tags: cartModel.tags,
+          Skincare skincareModel = Skincare(
+            item_id: cartModel.item_id,
+            varians: cartModel.varians,
+            image: cartModel.image,
+            name: cartModel.name,
+            price: cartModel.price,
+            rating: cartModel.rating,
+            sizes: cartModel.sizes,
+            description: cartModel.description,
+            tags: cartModel.tags,
+          );
+
+          return SizedBox(
+            width: MediaQuery.of(context).size.width,
+            child: Row(
+              children: [
+                //----------- CHECK BOX --------------------------------------//
+                GetBuilder(
+                  init: CartListController(),
+                  builder: (c){
+                    return IconButton(
+                      onPressed: ()
+                      {
+                        if(cartListController.selectedItemList.contains(cartModel.cart_id))
+                        {
+                          cartListController.deleteSelectedItem(cartModel.cart_id!);
+                        }
+                        else
+                        {
+                            cartListController.addSelectedItem(cartModel.cart_id!);
+                        }
+
+                       calculateTotalAmount();
+                      },
+                      icon: Icon(
+                        cartListController.selectedItemList.contains(cartModel.cart_id) ?
+                        Icons.check_box : Icons.check_box_outline_blank,
+                        color: cartListController.isSelectedAll ? Colors.pinkAccent :
+                        Colors.pinkAccent,
+                      ),
                     );
+                  },
+                ),
 
-                    return SizedBox(
-                      width: MediaQuery.of(context).size.width,
+
+                Expanded(
+                  child: GestureDetector(
+                    onTap: ()
+                    {
+
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(
+                        0,
+                        index == 0 ? 16 : 8,
+                        16,
+                        index == cartListController.cartList.length - 1 ? 16 : 8,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.white,
+                        boxShadow: const [
+                          BoxShadow(
+                            offset: Offset(0, 0),
+                            blurRadius: 6,
+                            color: Colors.pinkAccent,
+                          ),
+                        ],
+                      ),
                       child: Row(
                         children: [
-                          GetBuilder(
-                            init: CartListController(),
-                            builder: (c){
-                              return IconButton(
-                                  onPressed: ()
-                                  {
-                                    if(cartListController.selectedItemList.contains(cartModel.cart_id))
-                                      {
-                                        cartListController.deleteSelectedItem(cartModel.cart_id!);
-
-                                      }
-                                    else
-                                    {
-                                      cartListController.addSelectedItem(cartModel.cart_id!);
-                                    }
-
-                                    calculateTotalAmount();
-                                  },
-                                icon: Icon(
-                                  cartListController.selectedItemList.contains(cartModel.cart_id) ?
-                                  Icons.check_box : Icons.check_box_outline_blank,
-                                  color: cartListController.isSelectedAll ? Colors.pinkAccent :
-                                  Colors.grey,
-                                ),
-                              );
-                            },
-                          ),
-
 
                           Expanded(
-                            child: GestureDetector(
-                              onTap: ()
-                              {
-
-                              },
-                              child: Container(
-                                margin: EdgeInsets.fromLTRB(
-                                  0,
-                                  index == 0 ? 16 : 8,
-                                  16,
-                                  index == cartListController.cartList.length - 1 ? 16 : 8,
-                                ),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: Colors.white,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      offset: Offset(0, 0),
-                                      blurRadius: 6,
+                            child: Padding(
+                              padding: EdgeInsets.all(10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  //-------- DISPLAY NAME --------//
+                                  Text(
+                                    skincareModel.name.toString(),
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 18,
                                       color: Colors.pinkAccent,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                  ],
-                                ),
-                                child: Row(
-                                  children: [
+                                  ),
 
-                                    Expanded(
-                                        child: Padding(
-                                          padding: EdgeInsets.all(10),
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              //-------- DISPLAY NAME --------//
-                                              Text(
-                                                skincareModel.name.toString(),
-                                                maxLines: 2,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.pinkAccent,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
+                                  const SizedBox(height: 20),
 
-                                              const SizedBox(height: 20),
-
-                                              //--- DISPLAY VARIAN & SIZE ----//
-                                              Row(
-                                                children: [
-                                                  //---- varian & size -------//
-                                                  Expanded(
-                                                      child: Text(
-                                                      "Varian : ${cartModel.varian!.replaceAll('[', '').replaceAll(']', '')}" + "\n" + "Size : ${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
-                                                      maxLines: 3,
-                                                      overflow: TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        color: Colors.pinkAccent,
-                                                      ),
-                                                      ),
-                                                  ),
-
-                                                  Padding(
-                                                      padding: const EdgeInsets.only(
-                                                        left: 12,
-                                                        right: 12.0
-                                                      ),
-                                                    child: Text(
-                                                      "Rp" + skincareModel.price.toString(),
-                                                      style: const TextStyle(
-                                                        fontSize: 20,
-                                                        color: Colors.pinkAccent,
-                                                        fontWeight: FontWeight.bold,
-                                                      ),
-                                                    ),
-                                                  )
-                                                ],
-                                              ),
-
-                                              const SizedBox(height: 20),
-
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
-                                                children: [
-                                                  //----- ICONS (-) ----------//
-                                                  IconButton(
-                                                      onPressed: ()
-                                                      {
-                                                        if(cartModel.quantity! - 1 >= 1)
-                                                        {
-                                                          updateQuantityInUserCart(
-                                                            cartModel.cart_id!,
-                                                            cartModel.quantity! - 1,
-                                                          );
-                                                        }
-                                                      },
-                                                    icon: const Icon(
-                                                      Icons.remove_circle_outline,
-                                                      color: Colors.black,
-                                                      size: 30,
-                                                    ),
-                                                  ),
-
-                                                  const SizedBox(width: 10,),
-
-                                                  Text(
-                                                    cartModel.quantity.toString(),
-                                                    style: const TextStyle(
-                                                      color: Colors.pinkAccent,
-                                                      fontSize: 20,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-
-                                                  const SizedBox(width: 10,),
-
-                                                  //------ ICONS (+) ---------//
-                                                  IconButton(
-                                                    onPressed: ()
-                                                    {
-                                                      updateQuantityInUserCart(
-                                                        cartModel.cart_id!,
-                                                        cartModel.quantity! + 1,
-                                                      );
-                                                    },
-                                                    icon: const Icon(
-                                                        Icons.add_circle_outline,
-                                                        color: Colors.black,
-                                                        size: 30,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-
-
-                                            ],
+                                  //--- DISPLAY VARIAN & SIZE ----//
+                                  Row(
+                                    children: [
+                                      //---- varian & size -------//
+                                      Expanded(
+                                        child: Text(
+                                          "Varian: ${cartModel.varian!.replaceAll('[', '').replaceAll(']', '')}" + "\n" + "Size: ${cartModel.size!.replaceAll('[', '').replaceAll(']', '')}",
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(
+                                            color: Colors.pinkAccent,
                                           ),
-                                        ),),
-
-                                    //------ DISPLAY ITEM IMAGE -------------//
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.only(
-                                        topRight: Radius.circular(22),
-                                        bottomRight: Radius.circular(22),
-
-                                      ),
-                                      child: FadeInImage(
-                                        height: 185,
-                                        width: 150,
-                                        fit: BoxFit.cover,
-                                        placeholder: const AssetImage("images/placeholder.png"),
-                                        image: NetworkImage(
-                                          cartModel.image!,
                                         ),
-                                        imageErrorBuilder: (context, error, stackTraceError)
+                                      ),
+
+
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 12,
+                                            right: 12.0
+                                        ),
+                                        child: Text(
+                                          "Rp" + skincareModel.price.toString(),
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.pinkAccent,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+
+                                  const SizedBox(height: 20),
+
+                                  //---- DIPLAY (+) & (-) ICON BUTTON --------//
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      //----- ICONS (-) ----------//
+                                      IconButton(
+                                        onPressed: ()
                                         {
-                                          return const Center(
-                                            child: Icon(
-                                              Icons.broken_image_outlined,
-                                            ),
+                                          if(cartModel.quantity! - 1 >= 1)
+                                          {
+                                            updateQuantityInUserCart(
+                                              cartModel.cart_id!,
+                                              cartModel.quantity! - 1,
+                                            );
+                                          }
+                                        },
+                                        icon: const Icon(
+                                          Icons.remove_circle_outline,
+                                          color: Colors.black,
+                                          size: 30,
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 8,),
+
+                                      Text(
+                                        cartModel.quantity.toString(),
+                                        style: const TextStyle(
+                                          color: Colors.pinkAccent,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+
+                                      const SizedBox(width: 8,),
+
+                                      //------ ICONS (+) ---------//
+                                      IconButton(
+                                        onPressed: ()
+                                        {
+                                          updateQuantityInUserCart(
+                                            cartModel.cart_id!,
+                                            cartModel.quantity! + 1,
                                           );
                                         },
+                                        icon: const Icon(
+                                          Icons.add_circle_outline,
+                                          color: Colors.black,
+                                          size: 30,
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ),
+                                    ],
+                                  ),
+
+
+                                ],
                               ),
+                            ),),
+
+                          //------ DISPLAY ITEM IMAGE -------------//
+                          ClipRRect(
+                            borderRadius: const BorderRadius.only(
+                              topRight: Radius.circular(22),
+                              bottomRight: Radius.circular(22),
+
+                            ),
+                            child: FadeInImage(
+                              height: 185,
+                              width: 140,
+                              fit: BoxFit.cover,
+                              placeholder: const AssetImage("images/placeholder.png"),
+                              image: NetworkImage(
+                                cartModel.image!,
+                              ),
+                              imageErrorBuilder: (context, error, stackTraceError)
+                              {
+                                return const Center(
+                                  child: Icon(
+                                    Icons.broken_image_outlined,
+                                  ),
+                                );
+                              },
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
-                )
-              : const Center(
-                  child: Text("Cart Is Empty"),),
-        ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      )
+          : const Center(
+        child: Text("Cart Is Empty"),),
+      ),
       bottomNavigationBar: GetBuilder(
         init: CartListController(),
         builder: (c)
@@ -515,7 +523,7 @@ class _CartListScreenState extends State<CartListScreen>
               children: [
                 //------ TOTAL AMOUNT --------------------------------------//
                 const Text(
-                  "Total Amount:",
+                  "Total Price:",
                   style: const TextStyle(
                     fontSize: 16,
                     color: Colors.white,
@@ -541,8 +549,8 @@ class _CartListScreenState extends State<CartListScreen>
                 //------------ BUTTON ORDER NOW ------------------------------//
                 Material(
                   color: cartListController.selectedItemList.length > 0
-                      ? Colors.pinkAccent
-                      : Colors.white24,
+                      ? Colors.white
+                      : Colors.white,
                   borderRadius: BorderRadius.circular(30),
                   child: InkWell(
                     onTap: ()
@@ -557,8 +565,9 @@ class _CartListScreenState extends State<CartListScreen>
                       child: Text(
                         "Order Now",
                         style: TextStyle(
-                          color: Colors.white,
+                          color: Colors.pinkAccent,
                           fontSize: 14,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

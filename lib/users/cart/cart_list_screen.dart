@@ -46,7 +46,7 @@ class _CartListScreenState extends State<CartListScreen>
         }
         else
         {
-          Fluttertoast.showToast(msg: "Succes Executing Querry");
+          Fluttertoast.showToast(msg: "No Items Found");
         }
 
         cartListController.setList(cartListOfcurrentUser);

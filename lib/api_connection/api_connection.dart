@@ -1,5 +1,5 @@
 class Api{
-  static const hostConnect = "http://192.168.24.58/api_skincare";
+  static const hostConnect = "http://192.168.24.33/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
@@ -35,6 +35,7 @@ class Api{
   static const validateFavorite = "$hostFavorite/validate_favorite.php";
   static const addFavorite = "$hostFavorite/add.php";
   static const deleteFavorite = "$hostFavorite/delete.php";
+  static const readFavorite = "$hostFavorite/read.php";
 
 
 }

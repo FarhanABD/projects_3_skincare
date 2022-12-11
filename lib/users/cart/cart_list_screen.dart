@@ -177,7 +177,7 @@ class _CartListScreenState extends State<CartListScreen>
             {
               cartListController.setIsSelectedAllItems();
               cartListController.clearAllSelectedItems();
-              
+
               if(cartListController.isSelectedAll)
               {
                 cartListController.cartList.forEach((eachItem)
@@ -302,13 +302,16 @@ class _CartListScreenState extends State<CartListScreen>
                         if(cartListController.selectedItemList.contains(cartModel.cart_id))
                         {
                           cartListController.deleteSelectedItem(cartModel.cart_id!);
+                          calculateTotalAmount();
                         }
                         else
                         {
-                            cartListController.addSelectedItem(cartModel.cart_id!);
+                          cartListController.addSelectedItem(cartModel.cart_id!);
+                          // cartListController.addSelectedItem(cartModel.item_id!);
+                          calculateTotalAmount();
                         }
 
-                       calculateTotalAmount();
+                        calculateTotalAmount();
                       },
                       icon: Icon(
                         cartListController.selectedItemList.contains(cartModel.cart_id) ?

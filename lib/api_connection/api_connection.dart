@@ -5,6 +5,7 @@ class Api{
   static const hostUploadItem = "$hostConnect/items";
   static const hostItems = "$hostConnect/skincare";
   static const hostCart = "$hostConnect/cart";
+  static const hostFavorite = "$hostConnect/favorite";
 
 
   // Signup User
@@ -30,6 +31,10 @@ class Api{
   static const deleteSelectedItemsFromCartList = "$hostCart/delete.php";
   static const updateItemInCartList = "$hostCart/update.php";
 
+  // API FOR SAVING USER WISHLIST
+  static const validateFavorite = "$hostFavorite/validate_favorite.php";
+  static const addFavorite = "$hostFavorite/add.php";
+  static const deleteFavorite = "$hostFavorite/delete.php";
 
 
 }

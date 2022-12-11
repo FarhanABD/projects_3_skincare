@@ -1,10 +1,10 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/cart/cart_list_screen.dart';
 import 'package:skincare_app/users/controllers/item_details_controller.dart';
 import 'package:skincare_app/users/model/skincare.dart';
 import 'package:http/http.dart' as http;
@@ -62,6 +62,124 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
       print("Error :: " + errorMsg.toString());
     }
   }
+
+  // -------- FUNGSI UNTUK VALIDATE USER WISHLIST ----------------------------//
+  validateFavoriteList() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(Api.validateFavorite),
+        body: {
+          "user_id": currentOnlineUser.user.user_id.toString(),
+          "item_id": widget.itemInfo!.item_id.toString(),
+        },
+      );
+
+      if(res.statusCode == 200) //from flutter app the connection with api to server - success
+        {
+        var resBodyOfValidateFavorite = jsonDecode(res.body);
+        if(resBodyOfValidateFavorite['favoriteFound'] == true)
+        {
+          itemDetailsController.setIsFavorite(true);
+        }
+        else
+        {
+          itemDetailsController.setIsFavorite(false);
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error :: " + errorMsg.toString());
+    }
+  }
+
+  //------- FUNGSI UNTUK MENAMBAHKAN WISHLIST --------------------------------//
+  addItemToFavoriteList() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(Api.addFavorite),
+        body: {
+          "user_id": currentOnlineUser.user.user_id.toString(),
+          "item_id": widget.itemInfo!.item_id.toString(),
+        },
+      );
+
+      if(res.statusCode == 200) //from flutter app the connection with api to server - success
+          {
+        var resBodyOfAddFavorite = jsonDecode(res.body);
+        if(resBodyOfAddFavorite['success'] == true)
+        {
+          Fluttertoast.showToast(msg: "item saved to wishlist Successfully.");
+          validateFavoriteList();
+        }
+        else
+        {
+          Fluttertoast.showToast(msg: "Error Occur. Item not saved to wishlist.");
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error :: " + errorMsg.toString());
+    }
+  }
+
+  //------- FUNGSI UNTUK DELETE ITEMS DARI WISHLIST --------------------------//
+  deleteItemFromFavoriteList() async
+  {
+    try
+    {
+      var res = await http.post(
+        Uri.parse(Api.deleteFavorite),
+        body: {
+          "user_id": currentOnlineUser.user.user_id.toString(),
+          "item_id": widget.itemInfo!.item_id.toString(),
+        },
+      );
+
+      if(res.statusCode == 200) //from flutter app the connection with api to server - success
+        {
+        var resBodyOfDeleteFavorite = jsonDecode(res.body);
+        if(resBodyOfDeleteFavorite['success'] == true)
+        {
+          Fluttertoast.showToast(msg: "item deleted from wishlist Successfully.");
+          validateFavoriteList();
+        }
+        else
+        {
+          Fluttertoast.showToast(msg: "Error Occur. Item not deleted from wishlist.");
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Status is not 200");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error :: " + errorMsg.toString());
+    }
+  }
+
+
+  @override
+  void initState() {
+    super.initState();
+
+    validateFavoriteList();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +210,68 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
             alignment: Alignment.bottomCenter,
             child: itemInfoWidget(),
           ),
+
+          //------ ICON FAVORITES , SHOPPING CART, BACK BUTTON ---------------//
+          Positioned(
+             top: MediaQuery.of(context).padding.top,
+             left: 0,
+             right: 0,
+             child: Container(
+               color: Colors.transparent,
+               child: Row(
+                 children: [
+                   //---- BACK BUTTON --//
+                   IconButton(
+                       onPressed: ()
+                   {
+                     Get.back();
+                   },
+                     icon: const Icon(
+                       Icons.arrow_back,
+                       color: Colors.pinkAccent,
+                     ),
+                   ),
+
+                   const Spacer(),
+
+                   //-------- FAVOURITE BUTTON ------------------//
+                   Obx(() => IconButton(
+                       onPressed: ()
+                       {
+                         if(itemDetailsController.isfavorite == true)
+                         {
+                           //------- DELETE ITEMS FROM WISHLIST --------------//
+                           deleteItemFromFavoriteList();
+                         }
+                         else
+                         {
+                           //---- SAVE ITEMS TO USER FAVOURITES LIST WISHLIST -//
+                           addItemToFavoriteList();
+                         }
+                       },
+                       icon: Icon(
+                         itemDetailsController.isfavorite
+                             ? Icons.bookmark
+                             : Icons.bookmark_border_outlined,
+                         color: Colors.pinkAccent,
+                       ),
+                   )),
+
+                   //------ SHOPING CART ITEMS BUTTON ----------//
+                   IconButton(
+                       onPressed: ()
+                       {
+                         Get.to(CartListScreen());
+                       },
+                       icon: Icon(
+                         Icons.shopping_cart,
+                         color: Colors.pinkAccent,
+                       ),
+                   ),
+                 ],
+               ),
+             ),
+    ),
         ],
       ),
     );

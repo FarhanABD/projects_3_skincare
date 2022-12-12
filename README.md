@@ -1,5 +1,5 @@
 # skincare_app
-This is Our Team's Projects of Flutter Mobile with Android Studio App
+This is Our Team's Projects of Flutter Mobile with Android Studio App Using Get X Management,
 We Make This App for our final projects task, hope you like it :)
 ## Getting Started
 

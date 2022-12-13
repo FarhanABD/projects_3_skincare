@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/cart/cart_list_screen.dart';
+import 'package:skincare_app/users/item/item_details_screen.dart';
 import 'package:skincare_app/users/model/skincare.dart';
 import 'package:http/http.dart' as http;
 
@@ -76,9 +77,9 @@ class _SearchItemsState extends State<SearchItems> {
   Widget build(BuildContext context)
   {
     return Scaffold(
-      backgroundColor: Colors.pinkAccent[100],
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: Colors.pink[100],
         title: showSearchBarWidget(),
         titleSpacing: 0,
         leading: IconButton(
@@ -98,7 +99,7 @@ class _SearchItemsState extends State<SearchItems> {
 
   Widget showSearchBarWidget()
   {
-    TextEditingController searchController = TextEditingController();
+    // TextEditingController searchController = TextEditingController();
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 18),
       child: TextField(
@@ -120,12 +121,13 @@ class _SearchItemsState extends State<SearchItems> {
           ),
           hintText: "Search Item Here..",
           hintStyle: const TextStyle(
-            color: Colors.grey,
+            color: Colors.black,
             fontSize: 12,
           ),
           suffixIcon: IconButton(
             onPressed: (){
              searchController.clear();
+
              setState(() {
 
              });
@@ -147,6 +149,7 @@ class _SearchItemsState extends State<SearchItems> {
               width: 2,
               color: Colors.black,
             ),
+
           ),
           focusedBorder: const OutlineInputBorder(
             borderSide: BorderSide(
@@ -194,7 +197,7 @@ class _SearchItemsState extends State<SearchItems> {
             return ListView.builder(
               itemCount: dataSnapShot.data!.length,
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              // physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index)
               {
@@ -202,7 +205,7 @@ class _SearchItemsState extends State<SearchItems> {
                 return GestureDetector(
                   onTap: ()
                   {
-                    // Get.to(ItemDetailsScreen(itemInfo: eachSkincareItemsRecord));
+                     Get.to(ItemDetailsScreen(itemInfo: eachSkincareItemsRecord));
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(

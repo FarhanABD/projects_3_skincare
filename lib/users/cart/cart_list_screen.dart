@@ -4,6 +4,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/controllers/cart_list_controller.dart';
+import 'package:skincare_app/users/item/item_details_screen.dart';
 import 'package:skincare_app/users/model/cart.dart';
 import 'package:skincare_app/users/model/skincare.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
@@ -328,7 +329,7 @@ class _CartListScreenState extends State<CartListScreen>
                   child: GestureDetector(
                     onTap: ()
                     {
-
+                      Get.to(ItemDetailsScreen(itemInfo: skincareModel));
                     },
                     child: Container(
                       margin: EdgeInsets.fromLTRB(

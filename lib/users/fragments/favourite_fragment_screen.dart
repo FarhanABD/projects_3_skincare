@@ -123,10 +123,23 @@ class FavoritesFragmentScreen extends StatelessWidget
               itemBuilder: (context, index)
               {
                 Favorite eachFavoriteItemRecord = dataSnapShot.data![index];
+
+                Skincare clickedskincareItem = Skincare(
+                  item_id: eachFavoriteItemRecord.item_id,
+                  varians: eachFavoriteItemRecord.varians,
+                  image: eachFavoriteItemRecord.image,
+                  name: eachFavoriteItemRecord.name,
+                  price: eachFavoriteItemRecord.price,
+                  rating: eachFavoriteItemRecord.rating,
+                  sizes: eachFavoriteItemRecord.sizes,
+                  description: eachFavoriteItemRecord.description,
+                  tags: eachFavoriteItemRecord.tags,
+                );
+
                 return GestureDetector(
                   onTap: ()
                   {
-
+                    Get.to(ItemDetailsScreen(itemInfo: clickedskincareItem));
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(

@@ -1,103 +1,179 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:skincare_app/users/item/item_details_screen.dart';
-import 'package:skincare_app/users/model/favorite.dart';
-import 'package:http/http.dart' as http;
-import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:get/get.dart';
+import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/cart/cart_list_screen.dart';
 import 'package:skincare_app/users/model/skincare.dart';
-import 'package:skincare_app/users/userPreferences/current_user.dart';
+import 'package:http/http.dart' as http;
 
-class FavoritesFragmentScreen extends StatelessWidget
-{
-  final currentOnlineUser = Get.put(CurrentUser());
+class SearchItems extends StatefulWidget {
 
+  final String? typedKeyWords;
 
-  Future<List<Favorite>> getCurrentUserFavoriteList() async
+  SearchItems({this.typedKeyWords,});
+
+  @override
+  State<SearchItems> createState() => _SearchItemsState();
+}
+
+class _SearchItemsState extends State<SearchItems> {
+
+  TextEditingController searchController = TextEditingController();
+
+  Future<List<Skincare>> readSearchRecordsFound() async
   {
-    List<Favorite> favoriteListOfCurrentUser = [];
-    try
+    List<Skincare> skincareSearchList = [];
+
+    if(searchController.text != "")
     {
-      var res = await http.post(
-          Uri.parse(Api.readFavorite),
-          body:
-          {
-            "user_id": currentOnlineUser.user.user_id.toString(),
-          }
-      );
-
-      if (res.statusCode == 200)
+      try
       {
-        var responseBodyOfCurrentUserFavoriteListItems = jsonDecode(res.body);
+        var res = await http.post(
+            Uri.parse(Api.searchItems),
+            body:
+            {
+              "typedKeyWords": searchController.text,
+            }
+        );
 
-        if (responseBodyOfCurrentUserFavoriteListItems['success'] == true)
+        if (res.statusCode == 200)
         {
-          (responseBodyOfCurrentUserFavoriteListItems['currentUserFavoriteData'] as List).forEach((eachCurrentUserFavoriteItemData)
+          var responseBodyOfSearchItems = jsonDecode(res.body);
+
+          if (responseBodyOfSearchItems['success'] == true)
           {
-            favoriteListOfCurrentUser.add(Favorite.fromJson(eachCurrentUserFavoriteItemData));
-          });
+            (responseBodyOfSearchItems['itemsFoundData'] as List).forEach((eachItemData)
+            {
+              skincareSearchList.add(Skincare.fromJson(eachItemData));
+            });
+          }
+
         }
-
+        else
+        {
+          Fluttertoast.showToast(msg: "Status Code Is Not 200");
+        }
       }
-      else
+      catch(errorMsg)
       {
-        Fluttertoast.showToast(msg: "Status Code Is Not 200");
+        Fluttertoast.showToast(msg: "Error :: " + errorMsg.toString());
       }
-    }
-    catch(errorMsg)
-    {
-      Fluttertoast.showToast(msg: "Error :: " + errorMsg.toString());
+
     }
 
-    return favoriteListOfCurrentUser;
+    return skincareSearchList;
   }
 
   @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: const EdgeInsets.fromLTRB(16, 24, 8, 8),
-            child: Text(
-              "My Wishlist",
-              style: TextStyle(
-                color: Colors.pinkAccent,
-                fontSize: 30,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+  void initState() {
+    super.initState();
 
-          const Padding(
-            padding: const EdgeInsets.fromLTRB(16, 24, 8, 8),
-            child: Text(
-              "Ganteng Doang jemput cewe depan gang :)",
-              style: TextStyle(
-                color: Colors.pinkAccent,
-                fontSize: 16,
-                fontWeight: FontWeight.w300,
-              ),
-            ),
-          ),
-          const SizedBox(height: 24),
+    searchController.text = widget.typedKeyWords!;
+  }
 
-          //---------- DISPLAY USER WISHLIST ---------------------------------//
-          favoriteLitItemDesignWidget(context),
-        ],
+  @override
+  Widget build(BuildContext context)
+  {
+    return Scaffold(
+      backgroundColor: Colors.pinkAccent[100],
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: showSearchBarWidget(),
+        titleSpacing: 0,
+        leading: IconButton(
+          onPressed: ()
+          {
+            Get.back();
+          },
+          icon: const Icon(
+            Icons.arrow_back,
+            color: Colors.black,
+          ),
+        ),
       ),
+      body: searchItemDesignWidget(context),
     );
   }
 
-  favoriteLitItemDesignWidget(context)
+  Widget showSearchBarWidget()
+  {
+    TextEditingController searchController = TextEditingController();
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 18),
+      child: TextField(
+        style: const TextStyle(color: Colors.black),
+        controller: searchController,
+        decoration: InputDecoration(
+          prefixIcon: IconButton(
+            onPressed: ()
+            {
+              setState(() {
+
+              });
+            },
+            icon: const Icon(
+              Icons.search,
+              color: Colors.black,
+
+            ),
+          ),
+          hintText: "Search Item Here..",
+          hintStyle: const TextStyle(
+            color: Colors.grey,
+            fontSize: 12,
+          ),
+          suffixIcon: IconButton(
+            onPressed: (){
+             searchController.clear();
+             setState(() {
+
+             });
+            },
+            icon: const Icon(
+              Icons.close,
+              color: Colors.black,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          enabledBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+          ),
+          focusedBorder: const OutlineInputBorder(
+            borderSide: BorderSide(
+              width: 2,
+              color: Colors.black,
+            ),
+
+          ),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 10,
+          ),
+
+
+
+        ),
+      ),
+
+    );
+  }
+
+  searchItemDesignWidget(context)
   {
     return FutureBuilder
       (
-        future: getCurrentUserFavoriteList(),
-        builder: (context, AsyncSnapshot<List<Favorite>> dataSnapShot)
+        future: readSearchRecordsFound(),
+        builder: (context, AsyncSnapshot<List<Skincare>> dataSnapShot)
         {
           if(dataSnapShot.connectionState == ConnectionState.waiting)
           {
@@ -109,7 +185,7 @@ class FavoritesFragmentScreen extends StatelessWidget
           {
             return const Center(
                 child: Text(
-                  "No Favorite Items Found",
+                  "No Trending Items Found",
                 )
             );
           }
@@ -122,11 +198,11 @@ class FavoritesFragmentScreen extends StatelessWidget
               scrollDirection: Axis.vertical,
               itemBuilder: (context, index)
               {
-                Favorite eachFavoriteItemRecord = dataSnapShot.data![index];
+                Skincare eachSkincareItemsRecord = dataSnapShot.data![index];
                 return GestureDetector(
                   onTap: ()
                   {
-
+                    // Get.to(ItemDetailsScreen(itemInfo: eachSkincareItemsRecord));
                   },
                   child: Container(
                     margin: EdgeInsets.fromLTRB(
@@ -162,7 +238,7 @@ class FavoritesFragmentScreen extends StatelessWidget
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        eachFavoriteItemRecord.name!,
+                                        eachSkincareItemsRecord.name!,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -177,7 +253,7 @@ class FavoritesFragmentScreen extends StatelessWidget
                                     Padding(
                                       padding: const EdgeInsets.only(left: 12, right: 12),
                                       child: Text(
-                                        "Rp" + eachFavoriteItemRecord.price.toString(),
+                                        "Rp" + eachSkincareItemsRecord.price.toString(),
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
@@ -194,7 +270,7 @@ class FavoritesFragmentScreen extends StatelessWidget
 
                                 //------------ TAGS OF ITEMS ---------------//
                                 Text(
-                                  "Tags: \n"+ eachFavoriteItemRecord.tags.toString().replaceAll("[", "").replaceAll("]", ""),
+                                  "Tags: \n"+ eachSkincareItemsRecord.tags.toString().replaceAll("[", "").replaceAll("]", ""),
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -220,7 +296,7 @@ class FavoritesFragmentScreen extends StatelessWidget
                             fit: BoxFit.cover,
                             placeholder: const AssetImage("images/placeholder.png"),
                             image: NetworkImage(
-                              eachFavoriteItemRecord.image!,
+                              eachSkincareItemsRecord.image!,
                             ),
                             imageErrorBuilder: (context, error, stackTraceError)
                             {

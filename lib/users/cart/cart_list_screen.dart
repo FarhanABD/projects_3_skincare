@@ -7,6 +7,7 @@ import 'package:skincare_app/users/controllers/cart_list_controller.dart';
 import 'package:skincare_app/users/item/item_details_screen.dart';
 import 'package:skincare_app/users/model/cart.dart';
 import 'package:skincare_app/users/model/skincare.dart';
+import 'package:skincare_app/users/order/order_now_screen.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
 
@@ -73,7 +74,7 @@ class _CartListScreenState extends State<CartListScreen>
     {
       cartListController.cartList.forEach((itemInCart)
       {
-        if(cartListController.selectedItemList.contains(itemInCart.item_id))
+        if(cartListController.selectedItemList.contains(itemInCart.cart_id))
         {
           double eachItemTotalAmount = (itemInCart.price!) * (double.parse(itemInCart.quantity.toString()));
 
@@ -155,6 +156,33 @@ class _CartListScreenState extends State<CartListScreen>
   }
   //======= ENDS OF UPDATE QUANTITY FROM USER CART ===========================//
 
+  List<Map<String, dynamic>> getSelectedCartListItemsInformation()
+  {
+    List<Map<String, dynamic>> SelectedCartListItemsInformation = [];
+
+    if(cartListController.selectedItemList.length > 0)
+    {
+      cartListController.cartList.forEach((SelectedCartListItem)
+      {
+        if(cartListController.selectedItemList.contains(SelectedCartListItem.cart_id))
+        {
+          Map<String, dynamic> itemInformation =
+          {
+            "item_id": SelectedCartListItem.item_id,
+            "name": SelectedCartListItem.name,
+            'image': SelectedCartListItem.image,
+            'varian': SelectedCartListItem.varian,
+            'size': SelectedCartListItem.size,
+            'quantity': SelectedCartListItem.quantity,
+            'totalAmount': SelectedCartListItem.price! * SelectedCartListItem.quantity!,
+          };
+          SelectedCartListItemsInformation.add(itemInformation);
+        }
+      });
+    }
+    return SelectedCartListItemsInformation;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -183,8 +211,7 @@ class _CartListScreenState extends State<CartListScreen>
               {
                 cartListController.cartList.forEach((eachItem)
                 {
-                  cartListController.addSelectedItem(eachItem.item_id!);
-                  // cartListController.addSelectedItem(eachItem.cart_id!);
+                  cartListController.addSelectedItem(eachItem.cart_id!);
                   // ^^^^^^^^^^^^^^^^^ SYNTAX YG BENER ^^^^^^^^^^^^^^^^^^//
                 });
               }
@@ -559,7 +586,13 @@ class _CartListScreenState extends State<CartListScreen>
                   child: InkWell(
                     onTap: ()
                     {
-
+                      cartListController.selectedItemList.length > 0
+                          ? Get.to(OrderNowScreen(
+                        selectedCartListItemsInfo: getSelectedCartListItemsInformation(),
+                        totalAmount: cartListController.total,
+                        selectedCartIDs: cartListController.selectedItemList,
+                      ))
+                          : null;
                     },
                     child: const Padding(
                       padding: EdgeInsets.symmetric(

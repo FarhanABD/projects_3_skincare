@@ -453,14 +453,14 @@ class OrderNowScreen extends StatelessWidget
                           ),
                         ),
 
-                        Text(
-                          eachSelectedItem["price"].toString() + " x " + eachSelectedItem["quantity"].toString()
-                          + " = " + eachSelectedItem["totalAmount"].toString(),
-                          style: const TextStyle(
-                            color: Colors.black,
-                            fontSize: 12,
-                          ),
-                        ),
+                        // Text(
+                        //   eachSelectedItem["price"].toString() + " x " + eachSelectedItem["quantity"].toString()
+                        //   + " = " + eachSelectedItem["totalAmount"].toString(),
+                        //   style: const TextStyle(
+                        //     color: Colors.black,
+                        //     fontSize: 12,
+                        //   ),
+                        // ),
 
                       ],
                     ),

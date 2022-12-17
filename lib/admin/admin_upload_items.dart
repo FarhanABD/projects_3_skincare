@@ -32,14 +32,12 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
   captureImageWithPhone()async
   {
     pickedImageXFile = await _picker.pickImage(source: ImageSource.camera);
-
     Get.back();
     setState(()=>pickedImageXFile);
   }
   pickImageFromPhone()async
   {
     pickedImageXFile = await _picker.pickImage(source: ImageSource.gallery);
-
     Get.back();
     setState(()=>pickedImageXFile);
   }

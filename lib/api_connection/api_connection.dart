@@ -1,11 +1,12 @@
 class Api{
-  static const hostConnect = "http://10.10.175.239/api_skincare";
+  static const hostConnect = "http://192.168.24.38/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
   static const hostItems = "$hostConnect/skincare";
   static const hostCart = "$hostConnect/cart";
   static const hostFavorite = "$hostConnect/favorite";
+  static const hostOrder = "$hostConnect/order";
 
   // Signup User
   static const signup = "$hostConnectUser/signup.php";
@@ -38,4 +39,7 @@ class Api{
 
   // API TO SEARCH ITEMS IN SEARCH BAR
   static const searchItems = "$hostUploadItem/search.php";
+
+  // API ORDER
+  static const addOrder = "$hostOrder/add.php";
 }

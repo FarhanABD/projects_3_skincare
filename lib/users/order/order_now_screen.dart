@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:skincare_app/users/controllers/order_now_controller.dart';
+import 'package:skincare_app/users/order/order_confirmation.dart';
 
 class OrderNowScreen extends StatelessWidget
 {
@@ -36,6 +38,8 @@ class OrderNowScreen extends StatelessWidget
       body: ListView(
         children: [
           //------------ DISPLAY SELECTED ITEMS FROM CART --------------------//
+          displaySelectedItemsFromUserCart(),
+
           const SizedBox(height: 30),
 
 
@@ -100,7 +104,7 @@ class OrderNowScreen extends StatelessWidget
                  SizedBox(height: 2,),
 
                 Text(
-                  "No Rekening: 0264420300 \n Phone Number Seller : 081353401336",
+                  "No Rekening: 0264420300 \nPhone Number Seller : 081353401336",
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.pinkAccent,
@@ -291,7 +295,23 @@ class OrderNowScreen extends StatelessWidget
               child: InkWell(
                 onTap: ()
                 {
-
+                 if(phoneNumberController.text.isNotEmpty && shipmentAddressController.text.isNotEmpty)
+                 {
+                   Get.to(OrderConfirmationScreen(
+                     selectedCartIDs: selectedCartIDs,
+                     selectedCartListItemsInfo: selectedCartListItemsInfo,
+                     totalAmount: totalAmount,
+                     deliverySystem: orderNowController.deliverySys,
+                     paymentSystem: orderNowController.paymentSys,
+                     phoneNumber: phoneNumberController.text,
+                     shipmentAddress: shipmentAddressController.text,
+                     note: noteToSellerController.text,
+                   ));
+                 }
+                 else
+                 {
+                   Fluttertoast.showToast(msg: "Please Insert To The Blank Form!");
+                 }
                 },
                 borderRadius: BorderRadius.circular(30),
                 child: Padding(
@@ -304,7 +324,7 @@ class OrderNowScreen extends StatelessWidget
                       Text(
                         "Rp" + totalAmount!.toStringAsFixed(2),
                         style: const TextStyle(
-                          color: Colors.pinkAccent,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -315,7 +335,7 @@ class OrderNowScreen extends StatelessWidget
                       const Text(
                         "Pay Amount Now",
                         style: TextStyle(
-                          color: Colors.pinkAccent,
+                          color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -335,6 +355,137 @@ class OrderNowScreen extends StatelessWidget
 
 
       ),
+    );
+  }
+
+  displaySelectedItemsFromUserCart()
+  {
+    return Column(
+      children: List.generate(selectedCartListItemsInfo!.length, (index)
+      {
+        Map<String, dynamic> eachSelectedItem = selectedCartListItemsInfo![index];
+        return Container(
+          margin: EdgeInsets.fromLTRB(
+            16,
+            index == 0 ? 16 : 8,
+            16,
+            index == selectedCartListItemsInfo!.length - 1 ? 16 : 8,
+          ),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+            boxShadow: const [
+              BoxShadow(
+                offset: Offset(0, 0),
+                blurRadius: 6,
+                color: Colors.pink,
+              )
+            ],
+          ),
+          child: Row(
+            children: [
+              //------------ DISPLAY THE IMAGE -------------------------------//
+              ClipRRect(
+                borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(20),
+                    bottomLeft: Radius.circular(20)
+                ),
+                child: FadeInImage(
+                  height: 150,
+                  width: 130,
+                  fit: BoxFit.cover,
+                  placeholder: const AssetImage("images/placeholder.png"),
+                  image: NetworkImage(
+                    eachSelectedItem["image"],
+                  ),
+                  imageErrorBuilder: (context, error, stackTraceError)
+                  {
+                    return const Center(
+                      child: Icon(
+                        Icons.broken_image_outlined,
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              Expanded(
+                  child: Padding(
+                      padding: const EdgeInsets.all(8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // NAME
+                        Text(
+                          eachSelectedItem["name"],
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                            color: Colors.pink,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+
+                        //---------------- DISPLAY VARIAN & SIZE -------------//
+                        Text(
+                          eachSelectedItem["varian"].replaceAll("[", "").replaceAll("]", "") + "\n" +
+                          eachSelectedItem["size"].replaceAll("[", "").replaceAll("]", ""),
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.pinkAccent,
+                          ),
+                        ),
+
+                        const SizedBox(height: 16),
+
+                        //---- TOTAL AMOUNT -------//
+                        Text(
+                          "Rp" + eachSelectedItem["totalAmount"].toString(),
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.pinkAccent,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+
+                        Text(
+                          eachSelectedItem["price"].toString() + " x " + eachSelectedItem["quantity"].toString()
+                          + " = " + eachSelectedItem["totalAmount"].toString(),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 12,
+                          ),
+                        ),
+
+                      ],
+                    ),
+                  ),
+              ),
+
+              //------------ DISPLAY THE QUANTITY ---------------------------//
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  "Q: " + eachSelectedItem["quantity"].toString(),
+                  style: const TextStyle(
+                    fontSize: 24,
+                    color: Colors.pinkAccent,
+                  ),
+                ),
+              ),
+
+
+            ],
+          ),
+        );
+      }),
+
+
     );
   }
 }

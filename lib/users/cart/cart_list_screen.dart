@@ -175,6 +175,7 @@ class _CartListScreenState extends State<CartListScreen>
             'size': SelectedCartListItem.size,
             'quantity': SelectedCartListItem.quantity,
             'totalAmount': SelectedCartListItem.price! * SelectedCartListItem.quantity!,
+            'price': SelectedCartListItem.price!,
           };
           SelectedCartListItemsInformation.add(itemInformation);
         }

@@ -6,6 +6,8 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/fragments/dashboard_fragments.dart';
+import 'package:skincare_app/users/fragments/home_fragment_screen.dart';
 import 'package:skincare_app/users/model/order.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
 import 'package:http/http.dart' as http;
@@ -79,8 +81,8 @@ class OrderConfirmationScreen extends StatelessWidget
       paymentSystem: paymentSystem,
       note: note,
       totalAmount: totalAmount,
-      image: imageSelectedName,
-      status: "",
+      image: DateTime.now().millisecondsSinceEpoch.toString() + "-" + imageSelectedName,
+      status: "Processed",
       dateTime: DateTime.now(),
       shipmentAddress: shipmentAddress,
       phoneNumber: phoneNumber,
@@ -92,11 +94,63 @@ class OrderConfirmationScreen extends StatelessWidget
             Uri.parse(Api.addOrder),
             body: order.toJson(base64Encode(imageSelectedByte)),
           );
+
+          if(res.statusCode == 200)
+          {
+           var responseBodyOfAddNewOrder = jsonDecode(res.body);
+           if(responseBodyOfAddNewOrder["success"] == true)
+           {
+             //---------- DELETE SELECTED ITEMS FROM USER CART ---------------//
+             selectedCartIDs!.forEach((eachSelectedItemCartID)
+             {
+               deleteSelectedItemFromUserCartList(eachSelectedItemCartID);
+             });
+           }
+           else
+           {
+             Fluttertoast.showToast(msg: "You Have some error :(");
+           }
+          }
         }
         catch (errorMsg)
         {
           Fluttertoast.showToast(msg: "Error" + errorMsg.toString());
         }
+  }
+
+  deleteSelectedItemFromUserCartList(int cartID) async
+  {
+    try
+    {
+      var res = await http.post(
+          Uri.parse(Api.deleteSelectedItemsFromCartList),
+          body:
+          {
+            "cart_id": cartID.toString(),
+          }
+      );
+      if(res.statusCode == 200)
+      {
+        var responseBodyFromDeleteCart = jsonDecode(res.body);
+
+        if(responseBodyFromDeleteCart["success"] == true)
+        {
+          Fluttertoast.showToast(msg: "New Order Successfully Added");
+
+          Get.to(DashboardOfFragments());
+        }
+      }
+      else
+      {
+        Fluttertoast.showToast(msg: "Error Occured");
+      }
+    }
+    catch (errorMsg)
+    {
+      print("Error" + errorMsg.toString());
+
+      Fluttertoast.showToast(msg: "Error" + errorMsg.toString());
+    }
   }
 
   @override
@@ -114,7 +168,6 @@ class OrderConfirmationScreen extends StatelessWidget
             ),
 
             const SizedBox(height: 4),
-
             //-------------------- TITLE -------------------------------------//
             const Padding(
               padding: const EdgeInsets.all(8.0),

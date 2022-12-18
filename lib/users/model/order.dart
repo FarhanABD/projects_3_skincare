@@ -32,8 +32,8 @@ class Order
 
   Map<String, dynamic> toJson(String imageSelectedBase64)=>
       {
-        "order_id": order_id,
-        "user_id": user_id,
+        "order_id": order_id.toString(),
+        "user_id": user_id.toString(),
         "selectedItems": selectedItems,
         "deliverySystem": deliverySystem,
         "paymentSystem": paymentSystem,
@@ -41,7 +41,6 @@ class Order
         "totalAmount": totalAmount!.toStringAsFixed(2),
         "image": image,
         "status": status,
-        "dateTime": dateTime,
         "shipmentAddress": shipmentAddress,
         "phoneNumber": phoneNumber,
         "imageFile": imageSelectedBase64,

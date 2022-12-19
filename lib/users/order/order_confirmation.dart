@@ -136,7 +136,6 @@ class OrderConfirmationScreen extends StatelessWidget
         if(responseBodyFromDeleteCart["success"] == true)
         {
           Fluttertoast.showToast(msg: "New Order Successfully Added");
-
           Get.to(DashboardOfFragments());
         }
       }

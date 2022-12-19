@@ -1,5 +1,5 @@
 class Api{
-  static const hostConnect = "http://192.168.24.38/api_skincare";
+  static const hostConnect = "http://192.168.24.12/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
@@ -42,4 +42,5 @@ class Api{
 
   // API ORDER
   static const addOrder = "$hostOrder/add.php";
+  static const readOrders = "$hostOrder/read.php";
 }

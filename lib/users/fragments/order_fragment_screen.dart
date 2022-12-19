@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/model/order.dart';
 import 'package:http/http.dart' as http;
+import 'package:skincare_app/users/order/order_details.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
 import 'package:get/get.dart';
 
@@ -57,56 +58,84 @@ class OrderFragmentScreen extends StatelessWidget
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        backgroundColor: Colors.pinkAccent[100],
+        title: const Text(
+          "   Order Page",
+        ),
+        titleSpacing: 0,
+      ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //----------------- DISPLAY USER ORDER LIST ------------------------//
+
+
           Padding(
-            padding: EdgeInsets.fromLTRB(16, 24, 8, 0),
+            padding: const EdgeInsets.fromLTRB(16, 24, 8, 0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 //------- ORDER ICONS IMAGE & My order
                 Column(
-                  children: [
+                  children:  [
                     Image.asset(
                       "images/order_icons.png",
-                      width: 130,
+                      width: 100,
                     ),
-                    const Text(
+                     const Text(
                         "My Orders",
                       style: TextStyle(
                         color: Colors.pinkAccent,
-                        fontSize: 24,
+                        fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                   ],
                 ),
 
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Image.asset(
-                        "images/order_history.png",
-                        width: 50,
-                      ),
-                      const Text(
-                        "History",
-                        style: TextStyle(
-                          color: Colors.pinkAccent,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                GestureDetector(
+                  onTap: ()
+                  {
+                    //-------- SEND USER TO ORDER HISTORY SCREEN -------------//
+
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Image.asset(
+                          "images/order_history-removebg-preview.png",
+                          width: 100,
                         ),
-                      ),
-                    ],
+                        const Text(
+                          "History",
+                          style: TextStyle(
+                            color: Colors.pinkAccent,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],
             ),
           ),
-          
+
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            child: Text(
+              "Here Are Your Order :)",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.pinkAccent,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+
           Expanded(
             child: displayOrderList(context),
           ),
@@ -182,7 +211,9 @@ class OrderFragmentScreen extends StatelessWidget
                   child: ListTile(
                     onTap: ()
                     {
-
+                      Get.to(OrderDetailsScreen(
+                        clickOrderInfo: eachOrderData,
+                      ));
                     },
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

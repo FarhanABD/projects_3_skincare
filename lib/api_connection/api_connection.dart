@@ -18,6 +18,7 @@ class Api{
 
   // LOGIN ADMIN
   static const adminlogin = "$hostConnectAdmin/login.php";
+  static const adminGetAllOrders = "$hostConnectAdmin/read_orders.php";
 
   // UPLOAD NEW ITEMS TO DATABASE
   static const uploadNewItem = "$hostUploadItem/upload.php";

@@ -11,20 +11,20 @@ import 'package:skincare_app/users/userPreferences/current_user.dart';
 import 'package:get/get.dart';
 
 
-class OrderFragmentScreen extends StatelessWidget
+class AdminGetAllOrdersScreen extends StatelessWidget
 {
   final currentOnlineUser = Get.put(CurrentUser());
 
-  Future<List<Order>> getCurrentUserOrdersList() async
+  Future<List<Order>> getAllOrdersList() async
   {
-    List<Order> ordersListOfCurrentUser = [];
+    List<Order> ordersList = [];
     try
     {
       var res = await http.post(
-          Uri.parse(Api.readOrders),
+          Uri.parse(Api.adminGetAllOrders),
           body:
           {
-            "currentOnlineUserID": currentOnlineUser.user.user_id.toString(),
+
           }
       );
 
@@ -34,9 +34,9 @@ class OrderFragmentScreen extends StatelessWidget
 
         if (responseBodyOfCurrentUserOrdersList['success'] == true)
         {
-          (responseBodyOfCurrentUserOrdersList['currentUserOrdersData'] as List).forEach((eachCurrentUserOrderData)
+          (responseBodyOfCurrentUserOrdersList['allOrdersData'] as List).forEach((eachOrderData)
           {
-            ordersListOfCurrentUser.add(Order.fromJson(eachCurrentUserOrderData));
+            ordersList.add(Order.fromJson(eachOrderData));
           });
         }
 
@@ -51,7 +51,7 @@ class OrderFragmentScreen extends StatelessWidget
       Fluttertoast.showToast(msg: "Error :: " + errorMsg.toString());
     }
 
-    return ordersListOfCurrentUser;
+    return ordersList;
   }
 
   @override
@@ -74,7 +74,7 @@ class OrderFragmentScreen extends StatelessWidget
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 24, 8, 0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 //------- ORDER ICONS IMAGE & My order
                 Column(
@@ -83,58 +83,32 @@ class OrderFragmentScreen extends StatelessWidget
                       "images/order_icons.png",
                       width: 100,
                     ),
-                     const Text(
-                        "My Orders",
+                    const Text(
+                      "All New Orders",
                       style: TextStyle(
                         color: Colors.pinkAccent,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ],
-                ),
-
-                GestureDetector(
-                  onTap: ()
-                  {
-                    //-------- SEND USER TO ORDER HISTORY SCREEN -------------//
-
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Image.asset(
-                          "images/order_history-removebg-preview.png",
-                          width: 100,
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30.0),
+                      child: Text(
+                        "Here Are Your Customer Order :)",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.pinkAccent,
+                          fontWeight: FontWeight.w400,
                         ),
-                        const Text(
-                          "History",
-                          style: TextStyle(
-                            color: Colors.pinkAccent,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
           ),
 
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 30.0),
-            child: Text(
-              "Here Are Your Order :)",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.pinkAccent,
-                fontWeight: FontWeight.w400,
-              ),
-            ),
-          ),
+
 
           Expanded(
             child: displayOrderList(context),
@@ -148,66 +122,66 @@ class OrderFragmentScreen extends StatelessWidget
   Widget displayOrderList(context)
   {
     return FutureBuilder(
-        future: getCurrentUserOrdersList(),
-        builder: (context, AsyncSnapshot<List<Order>> dataSnapshot)
+      future: getAllOrdersList(),
+      builder: (context, AsyncSnapshot<List<Order>> dataSnapshot)
+      {
+        if(dataSnapshot.connectionState == ConnectionState.waiting)
         {
-          if(dataSnapshot.connectionState == ConnectionState.waiting)
-          {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Center(
-                  child: Text("Connection Waiting..",
-                    style: TextStyle(color: Colors.black),
-                  ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Center(
+                child: Text("Connection Waiting..",
+                  style: TextStyle(color: Colors.black),
                 ),
-                Center(
-                  child: CircularProgressIndicator(),
+              ),
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
+
+          );
+        }
+
+        if(dataSnapshot.data == null)
+        {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Center(
+                child: Text("No Orders Found :(",
+                  style: TextStyle(color: Colors.black),
                 ),
-              ],
+              ),
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
 
-            );
-          }
+          );
+        }
 
-          if(dataSnapshot.data == null)
-          {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Center(
-                  child: Text("No Orders Found :(",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                ),
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ],
+        if(dataSnapshot.data!.length > 0)
+        {
+          List<Order> orderlist = dataSnapshot.data!;
+          return ListView.separated
+            (
+            padding: EdgeInsets.all(16),
+            separatorBuilder: (context, index)
+            {
+              return const Divider(
+                height: 1,
+                thickness: 1,
+              );
+            },
+            itemCount: orderlist.length,
+            itemBuilder: (context, index)
+            {
+              Order eachOrderData = orderlist[index];
 
-            );
-          }
-
-          if(dataSnapshot.data!.length > 0)
-          {
-           List<Order> orderlist = dataSnapshot.data!;
-            return ListView.separated
-              (
-              padding: EdgeInsets.all(16),
-              separatorBuilder: (context, index)
-                {
-                  return const Divider(
-                    height: 1,
-                    thickness: 1,
-                  );
-                },
-              itemCount: orderlist.length,
-              itemBuilder: (context, index)
-              {
-                Order eachOrderData = orderlist[index];
-
-                return Card(
-                  color: Colors.pink[100],
-                  child: Padding(padding: EdgeInsets.all(18),
+              return Card(
+                color: Colors.pink[100],
+                child: Padding(padding: EdgeInsets.all(18),
                   child: ListTile(
                     onTap: ()
                     {
@@ -247,7 +221,7 @@ class OrderFragmentScreen extends StatelessWidget
                             //----------- DISPLAY THE DATE  ------------------//
                             Text(
                               DateFormat(
-                                "dd MMMM, yyyy"
+                                  "dd MMMM, yyyy"
                               ).format(eachOrderData.dateTime!),
                               style: const TextStyle(
                                 color: Colors.black,
@@ -278,31 +252,31 @@ class OrderFragmentScreen extends StatelessWidget
                       ],
                     ),
                   ),
-                  ),
-                );
-
-              },
-            );
-          }
-          else
-          {
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Center(
-                  child: Text("Order Page Is Empty",
-                    style: TextStyle(color: Colors.black),
-                  ),
                 ),
-                Center(
-                  child: CircularProgressIndicator(),
-                ),
-              ],
+              );
 
-            );
-          }
-        },
+            },
+          );
+        }
+        else
+        {
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: const [
+              Center(
+                child: Text("Order Page Is Empty",
+                  style: TextStyle(color: Colors.black),
+                ),
+              ),
+              Center(
+                child: CircularProgressIndicator(),
+              ),
+            ],
+
+          );
+        }
+      },
     );
   }
 }

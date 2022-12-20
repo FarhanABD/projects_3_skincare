@@ -80,7 +80,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               const SizedBox(height: 8,),
               showContentText(widget.clickOrderInfo!.totalAmount.toString()),
 
-              const SizedBox(height: 26,),
+              const SizedBox(height: 26),
 
               //------ PAYMENT PROOF IMAGES ----------------------------------//
               showTitleText("Payment Image:"),

@@ -28,8 +28,8 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         (
         Uri.parse(Api.adminlogin),
         body: {
-          'admin_email': emailController.text.trim(),
-          'admin_password':passwordController.text.trim(),
+          'email': emailController.text.trim(),
+          'password':passwordController.text.trim(),
         },
       );
 

@@ -6,7 +6,9 @@ import 'package:get/get_core/get_core.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:skincare_app/admin/admin_get_all_orders.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
+import 'package:skincare_app/users/authentication/login_screen.dart';
 
 class AdminUploadItemsScreen extends StatefulWidget {
   @override
@@ -103,21 +105,40 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
   Widget defaultScreen(){
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.pinkAccent[100],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [
-                Colors.pinkAccent,
-                Colors.white,
-              ],
-            ),
+
           ),
         ),
         automaticallyImplyLeading: false,
-        title:const Text(
-            "Upload Page"
+        title: GestureDetector(
+          onTap: ()
+          {
+            Get.to(AdminGetAllOrdersScreen());
+          },
+          child: const Text(
+              "New Orders",
+            style: TextStyle(
+              color: Colors.green,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
         ),
-        centerTitle: true,
+        centerTitle: false,
+        actions: [
+          IconButton(
+              onPressed: ()
+              {
+                Get.to(LoginScreen());
+              },
+            icon: const Icon(
+              Icons.logout,
+              color: Colors.pinkAccent,
+            ),
+          ),
+        ],
       ),
       body: Container(
         decoration: const BoxDecoration(
@@ -157,7 +178,6 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16,
-
                       ),
                     ),
                   ),

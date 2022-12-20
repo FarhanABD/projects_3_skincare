@@ -35,6 +35,7 @@ class Order
     user_id: int.parse(json["user_id"]),
     selectedItems: json["selectedItems"],
     deliverySystem: json["deliverySystem"],
+    paymentSystem: json["paymentSystem"],
     note: json["note"],
     totalAmount: double.parse(json["totalAmount"]),
     image: json["image"],

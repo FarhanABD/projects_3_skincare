@@ -1,5 +1,6 @@
 class Api{
-  static const hostConnect = "http://192.168.24.12/api_skincare";
+  //----- MEMANGGIL FOLDER API SKINCARE DARI FILE PHP HTDOCS -----------------//
+  static const hostConnect = "http://192.168.24.4/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
@@ -7,6 +8,8 @@ class Api{
   static const hostCart = "$hostConnect/cart";
   static const hostFavorite = "$hostConnect/favorite";
   static const hostOrder = "$hostConnect/order";
+  static const hostImages = "$hostConnect/transaction_proof_images/";
+
 
   // Signup User
   static const signup = "$hostConnectUser/signup.php";

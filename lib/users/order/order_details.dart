@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/model/order.dart';
 
 class OrderDetailsScreen extends StatefulWidget
@@ -22,7 +23,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: Colors.pink[100],
+        backgroundColor: Colors.pinkAccent[100],
         title: Text(
           DateFormat("dd MMMM, yyyy - hh:mm a").format(widget.clickOrderInfo!.dateTime!),
           style: const TextStyle(fontSize: 14),
@@ -51,6 +52,8 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               const SizedBox(height: 8,),
               showContentText(widget.clickOrderInfo!.shipmentAddress!),
 
+              const SizedBox(height: 26,),
+
               //------ DELIVERY ------------------------------------------//
               showTitleText("Delivery System:"),
               const SizedBox(height: 8,),
@@ -62,6 +65,43 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               showTitleText("Payment System:"),
               const SizedBox(height: 8,),
               showContentText(widget.clickOrderInfo!.paymentSystem!),
+
+              const SizedBox(height: 26,),
+
+              //------ NOTE TO SELLER ----------------------------------------//
+              showTitleText("Note To Seller:"),
+              const SizedBox(height: 8,),
+              showContentText(widget.clickOrderInfo!.note!),
+
+              const SizedBox(height: 26,),
+
+              //------ TOTAL AMOUNT ----------------------------------------//
+              showTitleText("Total Amount:"),
+              const SizedBox(height: 8,),
+              showContentText(widget.clickOrderInfo!.totalAmount.toString()),
+
+              const SizedBox(height: 26,),
+
+              //------ PAYMENT PROOF IMAGES ----------------------------------//
+              showTitleText("Payment Image:"),
+              const SizedBox(height: 8,),
+              FadeInImage(
+                width: MediaQuery.of(context).size.width * 0.8,
+                fit: BoxFit.fitWidth,
+                placeholder: const AssetImage("images/placeholder.png"),
+                image: NetworkImage(
+                  Api.hostImages + widget.clickOrderInfo!.image!
+                ),
+                imageErrorBuilder: (context, error, stackTraceError)
+                {
+                  return const Center(
+                    child: Icon(
+                      Icons.broken_image_outlined,
+                    ),
+                  );
+                },
+              ),
+
             ],
           ),
         ),

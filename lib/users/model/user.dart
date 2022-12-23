@@ -11,6 +11,7 @@ class User{
       this.user_name,
       this.user_email,
       this.user_password,
+
       );
 
   factory User.fromJson(Map<String, dynamic> json) => User(

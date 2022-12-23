@@ -28,6 +28,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
   var varianController = TextEditingController();
   var sizeController = TextEditingController();
   var descriptionController = TextEditingController();
+  var stokController = TextEditingController();
   var imageLink = "";
 
   //--------- Default Screen Method------------------------------------------//
@@ -105,7 +106,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
   Widget defaultScreen(){
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.pinkAccent[100],
+        backgroundColor: Colors.pink[200],
         flexibleSpace: Container(
           decoration: const BoxDecoration(
 
@@ -135,19 +136,14 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
               },
             icon: const Icon(
               Icons.logout,
-              color: Colors.pinkAccent,
+              color: Colors.white,
             ),
           ),
         ],
       ),
       body: Container(
         decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.pinkAccent,
-              Colors.white,
-            ],
-          ),
+          color: Colors.white70,
         ),
         child: Center(
           child: Column(
@@ -199,7 +195,6 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
     );
     String imageName = DateTime.now().millisecondsSinceEpoch.toString();
     requestImgurApi.fields['title'] = imageName;
-    // requestImgurApi.headers['Authorization'] = "Client-ID " + "97f174c40b9a6e4";
     requestImgurApi.headers['Authorization'] = "Client-ID " + "ec8c74ecd4356a8";
 
 
@@ -248,6 +243,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           'sizes': sizeList.toString(),
           'description': descriptionController.text.trim().toString(),
           'image': imageLink.toString(),
+          'stok': stokController.text.trim().toString(),
         },
       );
 
@@ -268,6 +264,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
             varianController.clear();
             sizeController.clear();
             descriptionController.clear();
+            stokController.clear();
           });
           Get.to(AdminUploadItemsScreen());
         }
@@ -295,7 +292,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Colors.white,
+                Colors.pinkAccent,
                 Colors.pinkAccent
               ],
             ),
@@ -322,6 +319,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
               varianController.clear();
               sizeController.clear();
               descriptionController.clear();
+              stokController.clear();
             });
             Get.to(AdminUploadItemsScreen());
           },
@@ -697,6 +695,49 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                           ),
                           const SizedBox(height: 18,),
 
+                          //Item Stok
+                          TextFormField(
+                            controller: stokController,
+                            validator: (val) => val == "" ? "Please Insert Item Stock" : null,
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(
+                                Icons.stacked_bar_chart_outlined,
+                                color: Colors.black26,
+                              ),
+                              hintText: "Item Stock",
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: const BorderSide(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: const BorderSide(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: const BorderSide(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30),
+                                borderSide: const BorderSide(
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 14,
+                                vertical: 6,
+                              ),
+                              fillColor: Colors.white,
+                              filled: true,
+                            ),
+                          ),
+                          const SizedBox(height: 18,),
 
                           // Button Upload
                           Material(
@@ -708,9 +749,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
                                 {
                                   Fluttertoast.showToast(msg: "Uploading Now..");
                                   uploadItemImage();
-
                                 }
-
                               },
                               borderRadius: BorderRadius.circular(30) ,
                               child: const Padding(

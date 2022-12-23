@@ -38,7 +38,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
       );
 
       if(res.statusCode == 200)  //Connection with API to server is succes
-      {
+          {
         var resbodyofvalidateEmail = jsonDecode(res.body);
         // var resbodyofvalidateEmail = await json.decode(json.encode(res.body));
 
@@ -124,11 +124,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
                   // Sign Up Header
                   SizedBox(
-                      width: MediaQuery.of(context).size.width,
-                      height: 285,
-                      child: Image.asset(
-                        "images/logo_baru.png",
-                      ),
+                    width: MediaQuery.of(context).size.width,
+                    height: 285,
+                    child: Image.asset(
+                      "images/logo_baru.png",
+                    ),
                   ),
 
                   //Login Screen Sign-in Form

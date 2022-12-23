@@ -8,6 +8,7 @@ class Skincare{
   List<String>? sizes;
   String? description;
   String? image;
+  int? stok;
 
   Skincare({
     this.item_id,
@@ -19,6 +20,7 @@ class Skincare{
     this.sizes,
     this.description,
     this.image,
+    this.stok,
   });
 
   factory Skincare.fromJson(Map<String, dynamic> json) => Skincare(
@@ -31,5 +33,6 @@ class Skincare{
     sizes: json["sizes"].toString().split(", "),
     description: json["description"],
     image: json["image"],
+    stok: int.parse(json["stok"]),
   );
 }

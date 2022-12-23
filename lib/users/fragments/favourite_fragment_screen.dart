@@ -75,7 +75,7 @@ class FavoritesFragmentScreen extends StatelessWidget
           const Padding(
             padding: const EdgeInsets.fromLTRB(16, 24, 8, 8),
             child: Text(
-              "Ganteng Doang jemput cewe depan gang :)",
+              "Checkout Me From Your Wishlist :)",
               style: TextStyle(
                 color: Colors.pinkAccent,
                 fontSize: 16,

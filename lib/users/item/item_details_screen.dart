@@ -10,7 +10,6 @@ import 'package:skincare_app/users/model/skincare.dart';
 import 'package:http/http.dart' as http;
 import 'package:skincare_app/users/userPreferences/current_user.dart';
 
-
 class ItemDetailsScreen extends StatefulWidget
 {
   final Skincare? itemInfo;
@@ -380,6 +379,18 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
                       ),
                       const SizedBox(height: 16,),
 
+                      //---- RATING STOK ------//
+                      Text(
+                        "stok : (" + widget.itemInfo!.stok!.toString() + ")",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black
+                        ),
+                      ),
+                      const SizedBox(height: 16,),
+
                       //---- RATING PRICE -----//
                       Text(
                         "Rp" + widget.itemInfo!.price.toString(),
@@ -389,6 +400,7 @@ class _ItemDetailsScreenState extends State<ItemDetailsScreen>
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      const SizedBox(height: 16,),
                     ],
                   ),
                 ),

@@ -1,6 +1,6 @@
 class Api{
   //----- MEMANGGIL FOLDER API SKINCARE DARI FILE PHP HTDOCS -----------------//
-  static const hostConnect = "http://192.168.24.4/api_skincare";
+  static const hostConnect = "http://192.168.24.71/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";

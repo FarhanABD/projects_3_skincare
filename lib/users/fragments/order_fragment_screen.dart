@@ -61,7 +61,7 @@ class OrderFragmentScreen extends StatelessWidget
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent[100],
         title: const Text(
-          "   Order Page",
+          "Order Page",
         ),
         // titleSpacing: 0,
       ),

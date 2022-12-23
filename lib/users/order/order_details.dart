@@ -232,7 +232,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-
                       // Text(
                       //   eachSelectedItem["price"].toString() + " x " + eachSelectedItem["quantity"].toString()
                       //   + " = " + eachSelectedItem["totalAmount"].toString(),
@@ -241,7 +240,6 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
                       //     fontSize: 12,
                       //   ),
                       // ),
-
                     ],
                   ),
                 ),

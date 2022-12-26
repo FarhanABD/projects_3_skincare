@@ -11,6 +11,7 @@ class Favorite
   List<String>? sizes;
   String? description;
   String? image;
+  int? stok;
 
   Favorite({
     this.favorite_id,
@@ -24,6 +25,7 @@ class Favorite
     this.sizes,
     this.description,
     this.image,
+    this.stok,
   });
 
   factory Favorite.fromJson(Map<String, dynamic> json) => Favorite(
@@ -38,5 +40,6 @@ class Favorite
     sizes: json['sizes'].toString().split(', '),
     description: json['description'],
     image: json['image'],
+    stok: int.parse(json['stok']),
   );
 }

@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/model/order.dart';
+import 'package:http/http.dart' as http;
 
 class OrderDetailsScreen extends StatefulWidget
 {
@@ -18,6 +20,100 @@ class OrderDetailsScreen extends StatefulWidget
 }
 
 class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+
+  // RxString _status = "Delivered".obs;
+  RxString _status = "Processed".obs;
+  String get status => _status.value;
+
+  updateParcelStatusForUI(String parcelReceived)
+  {
+    _status.value = parcelReceived;
+  }
+
+  showDialogForParcelConfirmation() async
+  {
+    if(widget.clickOrderInfo!.status == "Processed")
+    {
+      var response = await Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text(
+            "Confirmation",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+              "Have You Received Your Order ?",
+          style: TextStyle(
+            color: Colors.pinkAccent,
+          ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: ()
+                {
+                  Get.back();
+                },
+                child: const Text(
+                  "No",
+                  style: TextStyle(color: Colors.redAccent),
+                )
+            ),
+            TextButton(
+                onPressed: ()
+                {
+                  Get.back(result: "yesConfirmed");
+                },
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.green),
+                )
+            )
+          ],
+        ),
+      );
+
+      if(response == "yesConfirmed")
+      {
+        updateStatusValueInDatabase();
+      }
+    }
+  }
+
+  updateStatusValueInDatabase() async
+  {
+    try
+    {
+      var response = await http.post(
+        Uri.parse(Api.updateStatus),
+        body:
+        {
+          "order_id": widget.clickOrderInfo!.order_id.toString(),
+        }
+      );
+      if(response.statusCode == 200)
+      {
+        var responseBodyOfUpdateStatus = jsonDecode(response.body);
+        if(responseBodyOfUpdateStatus["success"] == true)
+        {
+          updateParcelStatusForUI("Finished");
+        }
+      }
+    }
+    catch(e)
+    {
+      print(e.toString());
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    updateParcelStatusForUI(widget.clickOrderInfo!.status.toString());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +124,46 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           DateFormat("dd MMMM, yyyy - hh:mm a").format(widget.clickOrderInfo!.dateTime!),
           style: const TextStyle(fontSize: 14),
         ),
+        actions: [
+          Padding(
+              padding: EdgeInsets.fromLTRB(8, 8, 16, 8),
+            child: Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                onTap: ()
+                {
+                  if(status == "Processed")
+                  {
+                    showDialogForParcelConfirmation();
+                  }
+                },
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Received",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pinkAccent,
+                        ),
+                      ),
+                      const SizedBox(width: 8,),
+                      Obx(() =>
+                          status == "Processed"
+                              ? const Icon(Icons.help_outline_outlined, color: Colors.pinkAccent,)
+                              : const Icon(Icons.check_circle_outline, color: Colors.greenAccent,)
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -79,6 +215,13 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
               showTitleText("Total Amount:"),
               const SizedBox(height: 8,),
               showContentText(widget.clickOrderInfo!.totalAmount.toString()),
+
+              const SizedBox(height: 26),
+
+              //---------- STATUS ORDER --------------------------------------//
+              showTitleText("Status:"),
+              const SizedBox(height: 8,),
+              showContentText(widget.clickOrderInfo!.status.toString()),
 
               const SizedBox(height: 26),
 

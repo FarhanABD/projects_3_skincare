@@ -302,7 +302,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
         title: const Text(
           "Upload Form",
           style: TextStyle(
-              color: Colors.black
+              color: Colors.white,
           ),
 
         ),

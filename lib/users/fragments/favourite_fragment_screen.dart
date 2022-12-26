@@ -134,6 +134,7 @@ class FavoritesFragmentScreen extends StatelessWidget
                   sizes: eachFavoriteItemRecord.sizes,
                   description: eachFavoriteItemRecord.description,
                   tags: eachFavoriteItemRecord.tags,
+                  stok: eachFavoriteItemRecord.stok,
                 );
 
                 return GestureDetector(

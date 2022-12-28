@@ -61,7 +61,7 @@ class HistoryScreen extends StatelessWidget
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent[100],
         title: const Text(
-          "Order Page",
+          "Order History Page",
         ),
         automaticallyImplyLeading: false,
         // titleSpacing: 0,

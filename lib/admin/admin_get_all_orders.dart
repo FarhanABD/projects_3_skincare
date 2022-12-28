@@ -63,6 +63,7 @@ class AdminGetAllOrdersScreen extends StatelessWidget
         title: const Text(
           "   Order Page",
         ),
+        automaticallyImplyLeading: false,
         // titleSpacing: 0,
       ),
       body: Column(

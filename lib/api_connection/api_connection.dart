@@ -1,6 +1,7 @@
 class Api{
   //----- MEMANGGIL FOLDER API SKINCARE DARI FILE PHP HTDOCS -----------------//
-  static const hostConnect = "http://192.168.1.2/api_skincare";
+  // static const hostConnect = "https://e-comm.wstif3a.id/api_skincare";
+  static const hostConnect = "http://192.168.1.11/api_skincare";
   static const hostConnectUser = "$hostConnect/user";
   static const hostConnectAdmin = "$hostConnect/admin";
   static const hostUploadItem = "$hostConnect/items";
@@ -9,7 +10,6 @@ class Api{
   static const hostFavorite = "$hostConnect/favorite";
   static const hostOrder = "$hostConnect/order";
   static const hostImages = "$hostConnect/transaction_proof_images/";
-
 
   // Signup User
   static const signup = "$hostConnectUser/signup.php";
@@ -49,5 +49,7 @@ class Api{
   static const readOrders = "$hostOrder/read.php";
   static const updateStatus = "$hostOrder/update_status.php";
   static const readHistory = "$hostOrder/read_history.php";
+  static const readTransfer = "$hostOrder/read_Transfer.php";
+
 
 }

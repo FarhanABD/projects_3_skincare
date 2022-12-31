@@ -6,12 +6,14 @@ import 'package:intl/intl.dart';
 import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/model/order.dart';
 import 'package:http/http.dart' as http;
+import 'package:skincare_app/users/order/history_screen.dart';
+import 'package:skincare_app/users/order/order_delivered.dart';
 import 'package:skincare_app/users/order/order_details.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
 import 'package:get/get.dart';
 
 
-class HistoryScreen extends StatelessWidget
+class OrderDeliveredFragmentScreen extends StatelessWidget
 {
   final currentOnlineUser = Get.put(CurrentUser());
 
@@ -21,7 +23,7 @@ class HistoryScreen extends StatelessWidget
     try
     {
       var res = await http.post(
-          Uri.parse(Api.readHistory),
+          Uri.parse(Api.readTransfer),
           body:
           {
             "currentOnlineUserID": currentOnlineUser.user.user_id.toString(),
@@ -61,7 +63,7 @@ class HistoryScreen extends StatelessWidget
       appBar: AppBar(
         backgroundColor: Colors.pinkAccent[100],
         title: const Text(
-          "Order History Page",
+          "Delivered Order Page",
         ),
         automaticallyImplyLeading: false,
         // titleSpacing: 0,
@@ -70,44 +72,72 @@ class HistoryScreen extends StatelessWidget
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           //----------------- DISPLAY USER ORDER LIST ------------------------//
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 24, 8, 0),
-              child: Column(
-                children:  [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Image.asset(
-                      "images/order_history-removebg-preview.png",
+
+
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 24, 8, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                //------- ORDER ICONS IMAGE & My order
+                Column(
+                  children:  [
+                    Image.asset(
+                      "images/deliver icon.png",
                       width: 50,
                     ),
-                  ),
-                  const Text(
-                    "My History Order",
-                    style: TextStyle(
-                      color: Colors.pinkAccent,
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
+                    const Text(
+                      "Delivery Orders",
+                      style: TextStyle(
+                        color: Colors.pinkAccent,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+
+                // GestureDetector(
+                //   onTap: ()
+                //   {
+                //     //-------- SEND USER TO ORDER HISTORY SCREEN -------------//
+                //     Get.to(HistoryScreen());
+                //   },
+                //   child: Padding(
+                //     padding: const EdgeInsets.all(8.0),
+                //     child: Column(
+                //       children: [
+                //         Image.asset(
+                //           "images/order_history-removebg-preview.png",
+                //           width: 100,
+                //         ),
+                //         // const Text(
+                //         //   "History",
+                //         //   style: TextStyle(
+                //         //     color: Colors.pinkAccent,
+                //         //     fontSize: 16,
+                //         //     fontWeight: FontWeight.bold,
+                //         //   ),
+                //         // ),
+                //       ],
+                //     ),
+                //   ),
+                // ),
+              ],
             ),
           ),
 
-            const Center(
-              child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 30.0),
-              child: Text(
-                "Here Are Your Succesfull Order :)",
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.pinkAccent,
-                  fontWeight: FontWeight.w400,
-                ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 30.0),
+            child: Text(
+              "Here Are Your Order :)",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.pinkAccent,
+                fontWeight: FontWeight.w400,
               ),
-          ),
             ),
+          ),
 
           Expanded(
             child: displayOrderList(context),
@@ -184,7 +214,7 @@ class HistoryScreen extends StatelessWidget
                   child: ListTile(
                     onTap: ()
                     {
-                      Get.to(OrderDetailsScreen(
+                      Get.to(OrderDeliveredScreen(
                         clickOrderInfo: eachOrderData,
                       ));
                     },

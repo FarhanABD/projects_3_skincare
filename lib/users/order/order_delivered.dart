@@ -7,22 +7,22 @@ import 'package:skincare_app/api_connection/api_connection.dart';
 import 'package:skincare_app/users/model/order.dart';
 import 'package:http/http.dart' as http;
 
-class OrderDetailsScreen extends StatefulWidget
+class OrderDeliveredScreen extends StatefulWidget
 {
   final Order? clickOrderInfo;
 
-  OrderDetailsScreen({
+  OrderDeliveredScreen({
     this.clickOrderInfo
   });
 
   @override
-  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
+  State<OrderDeliveredScreen> createState() => _OrderDeliveredScreenState();
 }
 
-class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
+class _OrderDeliveredScreenState extends State<OrderDeliveredScreen> {
 
   // RxString _status = "Delivered".obs;
-  RxString _status = "Processed".obs;
+  RxString _status = "Transfer".obs;
   String get status => _status.value;
 
   updateParcelStatusForUI(String parcelReceived)
@@ -30,82 +30,82 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
     _status.value = parcelReceived;
   }
 
-  // showDialogForParcelConfirmation() async
-  // {
-  //   if(widget.clickOrderInfo!.status == "Processed")
-  //   {
-  //     var response = await Get.dialog(
-  //       AlertDialog(
-  //         backgroundColor: Colors.white,
-  //         title: const Text(
-  //           "Confirmation",
-  //           style: TextStyle(
-  //             color: Colors.black,
-  //           ),
-  //         ),
-  //         content: const Text(
-  //           "Have You Received Your Order ?",
-  //           style: TextStyle(
-  //             color: Colors.pinkAccent,
-  //           ),
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //               onPressed: ()
-  //               {
-  //                 Get.back();
-  //               },
-  //               child: const Text(
-  //                 "No",
-  //                 style: TextStyle(color: Colors.redAccent),
-  //               )
-  //           ),
-  //           TextButton(
-  //               onPressed: ()
-  //               {
-  //                 Get.back(result: "yesConfirmed");
-  //               },
-  //               child: const Text(
-  //                 "Yes",
-  //                 style: TextStyle(color: Colors.green),
-  //               )
-  //           )
-  //         ],
-  //       ),
-  //     );
-  //
-  //     if(response == "yesConfirmed")
-  //     {
-  //       updateStatusValueInDatabase();
-  //     }
-  //   }
-  // }
+  showDialogForParcelConfirmation() async
+  {
+    if(widget.clickOrderInfo!.status == "Transfer")
+    {
+      var response = await Get.dialog(
+        AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text(
+            "Confirmation",
+            style: TextStyle(
+              color: Colors.black,
+            ),
+          ),
+          content: const Text(
+            "Have You Received Your Order ?",
+            style: TextStyle(
+              color: Colors.pinkAccent,
+            ),
+          ),
+          actions: [
+            TextButton(
+                onPressed: ()
+                {
+                  Get.back();
+                },
+                child: const Text(
+                  "No",
+                  style: TextStyle(color: Colors.redAccent),
+                )
+            ),
+            TextButton(
+                onPressed: ()
+                {
+                  Get.back(result: "yesConfirmed");
+                },
+                child: const Text(
+                  "Yes",
+                  style: TextStyle(color: Colors.green),
+                )
+            )
+          ],
+        ),
+      );
 
-  // updateStatusValueInDatabase() async
-  // {
-  //   try
-  //   {
-  //     var response = await http.post(
-  //         Uri.parse(Api.updateStatus),
-  //         body:
-  //         {
-  //           "order_id": widget.clickOrderInfo!.order_id.toString(),
-  //         }
-  //     );
-  //     if(response.statusCode == 200)
-  //     {
-  //       var responseBodyOfUpdateStatus = jsonDecode(response.body);
-  //       if(responseBodyOfUpdateStatus["success"] == true)
-  //       {
-  //         updateParcelStatusForUI("Finished");
-  //       }
-  //     }
-  //   }
-  //   catch(e)
-  //   {
-  //     print(e.toString());
-  //   }
-  // }
+      if(response == "yesConfirmed")
+      {
+        updateStatusValueInDatabase();
+      }
+    }
+  }
+
+  updateStatusValueInDatabase() async
+  {
+    try
+    {
+      var response = await http.post(
+          Uri.parse(Api.updateStatus),
+          body:
+          {
+            "order_id": widget.clickOrderInfo!.order_id.toString(),
+          }
+      );
+      if(response.statusCode == 200)
+      {
+        var responseBodyOfUpdateStatus = jsonDecode(response.body);
+        if(responseBodyOfUpdateStatus["success"] == true)
+        {
+          updateParcelStatusForUI("Finished");
+        }
+      }
+    }
+    catch(e)
+    {
+      print(e.toString());
+    }
+  }
 
   @override
   void initState() {
@@ -124,44 +124,44 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           DateFormat("dd MMMM, yyyy - hh:mm a").format(widget.clickOrderInfo!.dateTime!),
           style: const TextStyle(fontSize: 14),
         ),
-        actions: const [
+        actions: [
           Padding(
             padding: EdgeInsets.fromLTRB(8, 8, 16, 8),
-            // child: Material(
-            //   color: Colors.white,
-            //   borderRadius: BorderRadius.circular(10),
-            //   child: InkWell(
-            //     onTap: ()
-            //     {
-            //       if(status == "Processed")
-            //       {
-            //         // showDialogForParcelConfirmation();
-            //       }
-            //     },
-            //     borderRadius: BorderRadius.circular(30),
-            //     child: Padding(
-            //       padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            //       child: Row(
-            //         children: [
-            //           // const Text(
-            //           //   "Processed",
-            //           //   style: TextStyle(
-            //           //     fontSize: 14,
-            //           //     fontWeight: FontWeight.bold,
-            //           //     color: Colors.pinkAccent,
-            //           //   ),
-            //           // ),
-            //           // const SizedBox(width: 8,),
-            //           // // Obx(() =>
-            //           // // status == "Processed"
-            //           // //     ? const Icon(Icons.help_outline_outlined, color: Colors.pinkAccent,)
-            //           // //     : const Icon(Icons.check_circle_outline, color: Colors.greenAccent,)
-            //           // // ),
-            //         ],
-            //       ),
-            //     ),
-            //   ),
-            // ),
+            child: Material(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+              child: InkWell(
+                onTap: ()
+                {
+                  if(status == "Transfer")
+                  {
+                    showDialogForParcelConfirmation();
+                  }
+                },
+                borderRadius: BorderRadius.circular(30),
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                  child: Row(
+                    children: [
+                      const Text(
+                        "Received",
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.pinkAccent,
+                        ),
+                      ),
+                      const SizedBox(width: 8,),
+                      Obx(() =>
+                      status == "Transfer"
+                          ? const Icon(Icons.help_outline_outlined, color: Colors.pinkAccent,)
+                          : const Icon(Icons.check_circle_outline, color: Colors.greenAccent,)
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
           ),
         ],
       ),

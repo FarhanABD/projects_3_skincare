@@ -7,6 +7,7 @@ import 'package:skincare_app/users/fragments/about_fragment_screen.dart';
 import 'package:skincare_app/users/fragments/dashboard_fragments.dart';
 import 'package:skincare_app/users/fragments/favourite_fragment_screen.dart';
 import 'package:skincare_app/users/fragments/home_fragment_screen.dart';
+import 'package:skincare_app/users/fragments/order_delivered_fragment_screen.dart';
 import 'package:skincare_app/users/fragments/order_fragment_screen.dart';
 import 'package:skincare_app/users/order/history_screen.dart';
 import 'package:skincare_app/users/userPreferences/current_user.dart';
@@ -178,22 +179,22 @@ class ProfileFragmentScreen extends StatelessWidget {
                     children:  [
                       IconButton(
                         onPressed: (){
-                          Get.to(CartListScreen());
+                          Get.to(OrderDeliveredFragmentScreen());
                         },
                         icon: const Icon(
-                          Icons.shopping_cart,
+                          FontAwesomeIcons.truck,
                           color: Colors.pinkAccent,
                         ),
                       ),
-                       SizedBox(height: 10,),
+                      SizedBox(height: 10,),
 
-                       const Text("Cart Page", style: TextStyle(
-                          color: Colors.pinkAccent,
-                         fontWeight: FontWeight.bold,
-                         fontSize: 14,
-                       ),
+                      const Text("Delivered", style: TextStyle(
+                        color: Colors.pinkAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
 
-                       ),
+                      ),
                     ],
                   ),
                 ),
@@ -207,7 +208,7 @@ class ProfileFragmentScreen extends StatelessWidget {
                           Get.to(() => HistoryScreen());
                         },
                         icon: const Icon(
-                          Icons.history,
+                          FontAwesomeIcons.history,
                           color: Colors.pinkAccent,
                         ),
                       ),

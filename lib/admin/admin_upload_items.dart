@@ -121,7 +121,7 @@ class _AdminUploadItemsScreenState extends State<AdminUploadItemsScreen> {
           child: const Text(
               "New Orders",
             style: TextStyle(
-              color: Colors.green,
+              color: Colors.black,
               fontSize: 16,
               fontWeight: FontWeight.bold,
             ),
